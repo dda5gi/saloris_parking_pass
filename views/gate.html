@@ -1,0 +1,288 @@
+<!DOCTYPE html5>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <title>Parking Pass</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+      crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <title>Parking Pass</title>
+    <title>차단기</title>
+  </head>
+
+  <body>
+    <div class="mycontainer">
+      <main id="main">
+        <section class="signup">
+          <h2 class="signup_title">Parking Pass 차단기</h2>
+          <p></p>
+          <div class="signup_form">
+            <label for="car01" class="form_label">차량번호</label>
+            <input type="text" id="car01" placeholder="123가4578" required />
+          </div>
+
+          <div class="signup_form">
+            <label for="car02" class="form_label">차단기 상태</label>
+            <label for="closeopen" class="form_label" style = "margin-left: 90px;" id = closeopen>닫힘</label>
+          </div>
+        
+          <!-- Modal -->
+          <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog  modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                      aria-hidden="true">×</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Parking Pass</h4>
+                </div>
+                <div class="modal-body">
+                  <p>등록된 차량입니다</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal" onclick="changeUI()" >확인</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal -->
+          <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog  modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                      aria-hidden="true">×</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Parking Pass</h4>
+                </div>
+                <div class="modal-body">
+                  <p>등록되지 않은 차량입니다</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal" >확인</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog  modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                      aria-hidden="true">×</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Parking Pass</h4>
+                </div>
+                <div class="modal-body">
+                  <p>사용자가 승인하지 않았습니다.</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal" >확인</button>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <p></p>
+          <button class="submit-button" style="cursor:pointer" onclick="verify()">차량 검증</button>
+  
+        </section>
+      </main>
+
+      <footer class="footer">
+        <a href="https://saloris.world">(주)사로리스</a>
+      </footer>
+    </div>
+   
+  </body>
+
+  <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
+  <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
+  <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
+  <script>
+    function Request(){
+      var requestParam ="";
+            this.getParameter = function(param){
+          var url = unescape(location.href); //현재 주소를 decoding
+            var paramArr = (url.substring(url.indexOf("?")+1,url.length)).split("&"); //파라미터만 자르고, 다시 &그분자를 잘라서 배열에 넣는다. 
+            for(var i = 0 ; i < paramArr.length ; i++){
+                var temp = paramArr[i].split("="); //파라미터 변수명을 담음
+                if(temp[0].toUpperCase() == param.toUpperCase()){
+                  requestParam = paramArr[i].split("=")[1]; // 변수명과 일치할 경우 데이터 삽입
+                    break;
+                }
+            }
+            return requestParam;
+        };
+    }
+
+    var request = new Request();
+
+    var accountArray = []
+
+    $(document).ready(function () {
+        var info = localStorage.getItem("accountInfo")
+        var parsedinfo = JSON.parse(info)
+        accountArray.push(parsedinfo)
+        console.log(accountArray)
+    })
+
+    function verify(){
+        var query = $("#car01").val()
+        console.log(query)
+        console.log(accountArray[0]['carNumber'])
+      
+        if(query == accountArray[0]['carNumber']){
+            //alert('등록된 차량입니다')
+            $('#myModal').modal('show');  
+            //location.href='http://localhost:9000/?flag=1'
+        }
+        else{
+            //location.href='http://localhost:9000/?flag=2'
+            $('#myModal2').modal('show');  
+        }
+    }
+
+    function changeUI(){
+        var flag = request.getParameter('flag');
+        if(flag=='1'){
+            $('#myModal').modal('hide');  
+            $('#myModal3').modal('show');  
+        }
+        else{
+            $('#closeopen').hide();
+            $('#closeopen').text('열림');
+            $('#closeopen').show();
+
+            var close2 = setTimeout(function(){
+                $('#closeopen').hide();
+                $('#closeopen').text('닫힘');
+                $('#closeopen').show();
+            }, 10000);
+        }
+    }
+
+  </script>
+
+  <!-- STYLE - STYLE - STYLE - STYLE - STYLE - STYLE - STYLE - STYLE -  -->
+  <!-- STYLE - STYLE - STYLE - STYLE - STYLE - STYLE - STYLE - STYLE -  -->
+  <!-- STYLE - STYLE - STYLE - STYLE - STYLE - STYLE - STYLE - STYLE -  -->    
+  <style>
+    *{
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    body{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      }
+
+    .container {
+      display: flex;
+      flex-direction: column;}
+
+    .signup_title{
+                  color: #2977d3;
+                  margin-bottom: 50px;
+                  padding-bottom: 25px;
+                  text-align: left;
+                  font-weight: 700;
+
+                  border-bottom: 1px solid #2977d3;
+                  }
+
+    .signup_form{
+                  display: flex;
+                  color: #2f2f2f;
+                  margin-bottom: 15px; margin-left: 5px;
+                  font-weight: 300;
+                  font-size: 14px;
+                  line-height:30px;
+                  }
+
+    .signup_form label {
+                        width: 100px;
+                        text-align: left;
+                        z-index: -1;
+                        }
+
+    .signup_form input {
+                          border: 1px solid #ededed;
+                          border-radius: 5px;
+                          width: 200px; height: 30px;
+                          padding-left: 5px;
+                          text-align: center;
+                        }
+                        input::placeholder {
+                                            color: #bdbdbd;
+                                            }
+    #id {width: 135px;}
+    #id_button {width: 60px; height: 25px;
+                margin-left: 5px; margin-top: 2px;
+                font-size: 12px; color: #2977d3;
+                }
+
+
+    .signup_form select {
+                          border: 1px solid #ededed; color: inherit;
+                          background-color: inherit;
+                          border-radius: 5px;
+                          width: 200px; height: 30px;
+                          padding-left: 2px;
+                          text-align: center;
+                          }
+
+
+    .submit-button {
+                    border: 1px solid #2977d3;
+                    border-radius: 5px;
+                    background-color: white;
+                    width: 300px; height: 50px;
+                    margin-top: 40px;
+                    font-size: 16px; color: #2977d3;
+                    }
+                    .submit-button:hover {
+                                          border: 1px solid #2977d3;
+                                          border-radius: 5px;
+                                          background-color: #2977d3;
+                                          font-weight: 500;
+                                          color: white;
+                                          }
+
+      @media(max-width:400px){
+                              .signup_form {font-size: 10px;
+                                            margin-bottom: 10px;}
+                              .signup_form label {width: 65px;}
+                              .signup_form input{font-size: 11px;
+                                                  width: 190px; height: 25px;}
+                              .signup_form select {font-size: 11px;
+                                                  width: 190px; height: 25px;}
+                              .submit-button {width: 260px;}
+                              #id_button {width: 55px; height: 20px;
+                                          margin-left: 5px; margin-top: 2px;
+                                          font-size: 11px; color: #2977d3;}
+                              }
+
+      footer{
+              padding: 40px;
+              text-align: center;
+              font-size: 12px;
+              }
+
+            a:link {text-decoration: none; color: #bdbdbd;}
+            a:visited {text-decoration: none; color: #bdbdbd;}
+            a:active {text-decoration: none; color: #bdbdbd;}
+            a:hover {text-decoration: none; color:#2977d3;}
+
+  </style>
+</html>
+

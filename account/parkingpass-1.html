@@ -1,0 +1,124 @@
+<!DOCTYPE html5>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap"
+     rel="stylesheet">
+     <link rel="stylesheet" href="parkingpass-1.css">
+
+  </head>
+
+
+  <body>
+    <div class="container">
+      <main id="main">
+        <section class="signup">
+          <h2 class="signup_title">Parking Pass 회원등록</h2>
+          <p></p>
+
+          <form action="---.php" method="post">
+
+            <div class="signup_form">
+              <label for="id" class="form_label">회원 ID</label>
+              <input type="text" id="id"
+                    placeholder="" required/>
+                    <input type="button" id="id_button" style="cursor:pointer" value="중복확인">
+            </div>
+
+            <div class="signup_form">
+              <label for="pwd" class="form_label">비밀번호</label>
+              <input type="password" id="pwd"
+                     placeholder="*****" required/>
+             </div>
+
+             <div class="signup_form">
+               <label for="pwd" class="form_label">비밀번호 확인</label>
+               <input type="password" id="pwd"
+                      placeholder="*****" required/>
+              </div>
+
+            <div class="signup_form">
+              <label for="name" class="form_label">이름</label>
+              <input type="text" id="name"
+                    placeholder="홍길동" required/>
+            </div>
+
+            <div class="signup_form">
+              <label for="phonenumber" class="form_label">휴대폰</label>
+              <input type="text" id="phonenumber"
+                    placeholder="'-' 제외 입력" required/>
+            </div>
+
+            <div class="signup_form">
+              <label for="email" class="form_label">이메일</label>
+              <input type="text" id="email"
+                    placeholder="example@saloris.world" required/>
+            </div>
+
+
+            <div class="signup_form">
+              <label for="car01" class="form_label">차량번호</label>
+              <input type="text" id="car01"
+                    placeholder="123가4578" required/>
+            </div>
+
+            <div class="signup_form">
+              <label for="car02" class="form_label">제조사</label>
+              <input type="text" id="car02"
+                    placeholder="제조사" required/>
+            </div>
+
+            <div class="signup_form">
+              <label for="car03" class="form_select">차량형태</label>
+              <select id="car03" name="car03">
+                <option selected color>차량형태 선택</option>
+                <option value="Compact">초소형차(Compact)</option>
+                <option value="Sedan">세단(Sedan)</option>
+                <option value="Coupe">쿠페(Coupe)</option>
+                <option value="Convertible">컨버터블(Convertible)</option>
+                <option value="Hatchback">해치백(Hatch-back)</option>
+                <option value="Limousine">리무진(Limousine)</option>
+                <option value="Wagon">왜건(Wagon)</option>
+                <option value="SUV">SUV</option>
+                <option value="VAN">밴(VAN)</option>
+                <option value="PickupTruck">픽업트럭(Pick-up Truck)</option>
+                <option value="CUV">CUV(크로스오버SUV)</option>
+                <option value="specialty">화물자동차/특수자동차</option>
+                <option value="direct">그 외</option>
+              </select>
+            </div>
+
+            <div class="signup_form">
+              <label for="car04" class="form_select">차량색상</label>
+              <select id="car04" name="car04">
+                <option selected>색상 선택</option>
+                <option value="white">흰색(White)</option>
+                <option value="gray">회색(Gray)</option>
+                <option value="silver">은색(Silver)</option>
+                <option value="blcak">검정(Black)</option>
+                <option value="Blue">파랑(Blue)</option>
+                <option value="red">빨강(Red)</option>
+                <option value="">밤색(Brown)</option>
+                <option value="">노랑(Yellow)</option>
+                <option value="">금색(Gold)</option>
+                <option value="">초록(Green)</option>
+                <option value="direct">그 외</option>
+              </select>
+            </div>
+
+            <p></p>
+            <button class="submit-button" style="cursor:pointer">차량 등록하기</button>
+
+            </form>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <a href="https://saloris.world">(주)사로리스</a>
+      </footer>
+    </div>
+
+  </body>
+</html>
