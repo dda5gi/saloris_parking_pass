@@ -1,0 +1,59 @@
+<html>
+  <%-include('head.ejs') %>
+ 
+  <body>
+    <div class="mycontainer">
+      <main id="main">
+        <section class="signup">
+          <h2 class="signup_title">로그인</h2>
+          <p></p>
+          
+          <div class="signup_form">
+            <label for="loginId" class="form_label">ID</label>
+            <input type="text" id="loginId" required />
+          </div>
+  
+          <div class="signup_form">
+            <label for="password" class="form_label">비밀번호</label>
+            <input type="password" id="password" required />
+          </div>
+
+          <p></p>
+          <div class="container">
+            <button onclick=signIn() class="submit-button" style="cursor:pointer">로그인</button>
+          </div>
+          <div class="container">
+            <button onclick="location.href='/'" class="submit-button" style="cursor:pointer">홈으로</button>
+          </div>
+  
+        </section>
+      </main>
+  
+      <footer class="footer">
+        <a href="https://saloris.world">(주)사로리스</a>
+      </footer>
+    </div>
+  </body>
+
+
+  <script>
+    function signIn() {
+      var userParams = {};
+      userParams.loginId = $("#loginId").val();
+      userParams.password = $("#password").val();
+      console.log(userParams);
+      var ajax = $.ajax({
+        url: "/login",
+        data: userParams,
+        type: 'POST',
+        dataType: "JSON",
+        success: function (result) {
+          console.log(result);
+          location.href = "/";
+        }
+      });
+    }
+  </script>
+
+<%-include('form.ejs') %>
+</html>

@@ -1,0 +1,70 @@
+<html>
+  <head>
+    <%-include('head.ejs') %>
+  </head>
+
+  <body>
+    <div class="mycontainer">
+      <main id="main">
+        <section class="signup">
+          <h2 class="signup_title">회원가입</h2>
+          <p></p>
+          
+          <div class="signup_form">
+            <label for="loginId" class="form_label">ID</label>
+            <input type="text" id="loginId" required />
+          </div>
+  
+          <div class="signup_form">
+            <label for="password" class="form_label">비밀번호</label>
+            <input type="password" id="password" required />
+          </div>
+  
+          <div class="signup_form">
+            <label for="realname" class="form_label">이름</label>
+            <input type="text" id="realname" required />
+          </div>
+
+          <p></p>
+          <div class="container">
+            <button onclick=signUp() class="submit-button" style="cursor:pointer">가입하기</button>
+          </div>
+          <div class="container">
+            <button onclick="location.href='/'" class="submit-button" style="cursor:pointer">홈으로</button>
+          </div>
+        </section>
+      </main>
+  
+      <footer class="footer">
+        <a href="https://saloris.world">(주)사로리스</a>
+      </footer>
+    </div>
+  </body>
+
+
+  <script>
+    function signUp() {
+      var userParams = {};
+      userParams.loginId = $("#loginId").val();
+      userParams.password = $("#password").val();
+      userParams.realname = $("#realname").val();
+      console.log(userParams);
+      var ajax = $.ajax({
+        url: "/userRegister",
+        data: userParams,
+        type: 'POST',
+        dataType: "JSON",
+        success: function (result) {
+          if(result.msg === 'fail'){
+            alert('ID 중복');
+          }
+          else{
+            alert('회원가입 완료')
+            location.href = "/";
+          }
+        }
+      });
+    }
+  </script>
+<%-include('form.ejs') %>
+</html>

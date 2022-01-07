@@ -1,10 +1,12 @@
-const express = require('express')
+const express = require('express');
+var cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const path = require('path')
-const { get } = require('request')
-const app = express()
+const path = require('path');
+const { get } = require('request');
+const app = express();
+app.use(cookieParser());
 const mongoose = require('mongoose');
-const routes = require('./routes/')
+const routes = require('./routes/');
 
 mongoose.connect('mongodb://localhost:27017/test', { // 경로는 본인이 설정할 것, 없으면 mongo에서 자동으로 생성해줌
     useUnifiedTopology: true,
@@ -19,8 +21,10 @@ db.once('open', function() {
     console.log('MongoDB Connected!');
 });
 
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
+// app.engine('html', require('ejs').renderFile);
+// app.set('view engine', 'html');
+app.set('view engine', 'ejs')
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use('/', routes);

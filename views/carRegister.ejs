@@ -1,0 +1,165 @@
+<!DOCTYPE html5>
+<html>
+  <%-include('head.ejs') %>
+<body>
+  <div class="mycontainer">
+    <main id="main">
+      <section class="signup">
+        <h2 class="signup_title">차량 등록</h2>
+        <p></p>
+        <div class="signup_form">
+          <label for="carNumber" class="form_label">차량번호</label>
+          <input type="text" id="carNumber" placeholder="123가4578" required />
+        </div>
+
+        <div class="signup_form">
+          <label for="manufacturer" class="form_label">제조사</label>
+          <input type="text" id="manufacturer" placeholder="제조사" required />
+        </div>
+
+        <div class="signup_form">
+          <label for="carType" class="form_select">차량형태</label>
+          <select id="carType" name="carType">
+            <option selected color>차량형태 선택</option>
+            <option value="Compact">초소형차(Compact)</option>
+            <option value="Sedan">세단(Sedan)</option>
+            <option value="Coupe">쿠페(Coupe)</option>
+            <option value="Convertible">컨버터블(Convertible)</option>
+            <option value="Hatchback">해치백(Hatch-back)</option>
+            <option value="Limousine">리무진(Limousine)</option>
+            <option value="Wagon">왜건(Wagon)</option>
+            <option value="SUV">SUV</option>
+            <option value="VAN">밴(VAN)</option>
+            <option value="PickupTruck">픽업트럭(Pick-up Truck)</option>
+            <option value="CUV">CUV(크로스오버SUV)</option>
+            <option value="specialty">화물자동차/특수자동차</option>
+            <option value="direct">그 외</option>
+          </select>
+        </div>
+
+        <div class="signup_form">
+          <label for="carColor" class="form_select">차량색상</label>
+          <select id="carColor" name="carColor">
+            <option selected>색상 선택</option>
+            <option value="white">흰색(White)</option>
+            <option value="gray">회색(Gray)</option>
+            <option value="silver">은색(Silver)</option>
+            <option value="blcak">검정(Black)</option>
+            <option value="Blue">파랑(Blue)</option>
+            <option value="red">빨강(Red)</option>
+            <option value="">밤색(Brown)</option>
+            <option value="">노랑(Yellow)</option>
+            <option value="">금색(Gold)</option>
+            <option value="">초록(Green)</option>
+            <option value="direct">그 외</option>
+          </select>
+        </div>
+
+        <p></p>
+        <div class="container">
+          <button onclick=signUp() class="submit-button" style="cursor:pointer">등록하기</button>
+        </div>
+        <div class="container">
+          <button onclick="location.href='/'" class="submit-button" style="cursor:pointer">홈으로</button>
+        </div>
+
+        <div class="modal fade" id="confirmModal" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>등록하시겠습니까?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오 </button>
+                <button type="button" class="btn btn-primary" onclick="signUpConfirm()">예</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="completeModal" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>등록이 완료되었습니다</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="signUpComplete()">확인</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <a href="https://saloris.world">(주)사로리스</a>
+    </footer>
+  </div>
+
+</body>
+
+<!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
+<!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
+<!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
+<script>
+  var carInfo = {};
+
+  function signUp(){ 
+    readCookie('userId');
+    $('#confirmModal').modal('show');
+  }
+
+  function readCookie(key) {
+    var cookie = document.cookie;
+    cookie = cookie.split(';');
+    console.log(cookie);
+    cookie.some(function (item) {
+          item = item.replace(' ', '');
+          var dic = item.split('=');
+          console.log(dic);
+          if (key === dic[0]) {
+            carInfo.userId = dic[1];
+            //carInfo에 userId기입
+            console.log(carInfo);
+            console.log(dic[1]);
+          }
+      });
+  }  
+
+  function signUpConfirm(){
+    carInfo.carNumber = $("#carNumber").val();
+    carInfo.manufacturer = $("#carNumber").val();
+    carInfo.carType = $("#carType").val();
+    carInfo.carColor = $("#carColor").val();
+    console.log(carInfo)
+    var ajax = $.ajax({
+      url: "/carRegister",
+      data: carInfo,
+      type: "POST",
+      dataType: "JSON",
+      success: function (result) {
+        if(result.msg === 'fail'){
+          alert('등록 실패')
+        } else{
+          $('#completeModal').modal('show');  
+        }
+      }
+    });
+  }
+
+  function signUpComplete(){
+      location.href='http://localhost:3000'
+  }
+</script>
+<%-include('form.ejs') %>
+
+
+</html>

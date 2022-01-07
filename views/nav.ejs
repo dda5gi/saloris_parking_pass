@@ -1,0 +1,53 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand mb-0 h1" href="#">Parking pass</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/carRegister" id="carRegister" style="display: none">차량 등록</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/carCheck" id="carCheck" style="display: none">차량 조회</a>
+          </li>
+          <li class="nav-item">
+              <button class="btn btn-info" id="login" onclick="location.href='/login'">로그인</button>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-info" id="logout" onclick="location.href='/logout'" style="display: none">로그아웃</button>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-info" id="userRegister" onclick="location.href='/userRegister'">회원가입</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+</nav>
+
+<script>
+    // 쿠키 읽고 맞춰서 HTML 그리기
+    function readCookie(key) {
+      console.log(document.cookie);
+      var cookie = document.cookie;
+      cookie = cookie.split(';');
+      console.log(cookie);
+      cookie.some(function (item) {
+            item = item.replace(' ', '');
+            var dic = item.split('=');
+            if (key === dic[0]) {
+              $('#logout').show();
+              $('#login').hide();
+              $('#userRegister').hide();
+              $('#carRegister').show();
+              $('#carCheck').show();
+              return;
+            }
+        });
+    }
+    readCookie('userId');
+  </script>

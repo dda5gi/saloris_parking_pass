@@ -1,6 +1,7 @@
 const User = require('../model/userSchema');
 const Car = require('../model/carSchema');
 const wallet = require('./kas/wallet');
+const { createProxy } = require('http-proxy');
 
 module.exports = {
     signUp: async function(req, res) {
@@ -39,10 +40,10 @@ module.exports = {
     signIn: async function(req, res) {
         User.find( {loginId: req.body.loginId}, async function(err,docs) { 
             if(docs[0] && docs[0].password == req.body.password){
-                console.log(docs)
+                console.log('user', docs[0].loginId, 'logined')
                 console.log('P/W MATCHED');
                 res.cookie('userId', req.body.loginId);
-                res.cookie('realname', req.body.realname, {
+                res.cookie('realname', docs[0].realname, {
                     maxAge:60*60*1000,
                     path:"/"
                 });
@@ -62,7 +63,6 @@ module.exports = {
 
     // USER에 CarId를 저장,, 고객 소유 차량 저장용,, 차량 등록 시 호출됨
     addCarId: async function(carUniqueId, userId) {
-        console.log('my life for aiur', carUniqueId, userId)
         User.findOneAndUpdate({ loginId: userId },
             { $addToSet: { carId: carUniqueId } },
             { upsert: false },
@@ -72,7 +72,27 @@ module.exports = {
         });
     },
 
-    carCheck: function(car) {
-
+    //유저가 소유한 차량 정보 출력
+    carCheck: function(req, res) {
+        var userId = req.cookies.userId
+        var carInfos = new Array();
+        User.find( {loginId: userId }, function(err, docs) {
+            if(docs[0].carId[0]) {
+                carIds = docs[0].carId;
+                console.log('carIds:', carIds);
+                carIds.forEach(element => {
+                    Car.find({_id: element}, function(err, docs) {
+                        if(err) console.error(err);
+                        carInfos.push(docs[0]);
+                        if(carIds.length == carInfos.length){
+                            res.render('../views/carCheck', {result : carInfos})
+                        }
+                    })
+                });
+            }else{
+                res.render('../views/carCheck', {result : 'empty'})
+                console.log('no car')
+            }
+        })
     }
 };
