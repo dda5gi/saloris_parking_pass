@@ -30,7 +30,7 @@
             <option value="Wagon">왜건(Wagon)</option>
             <option value="SUV">SUV</option>
             <option value="VAN">밴(VAN)</option>
-            <option value="PickupTruck">픽업트럭(Pick-up Truck)</option>
+            <option value="PickUpTruck">픽업트럭(Pick-up Truck)</option>
             <option value="CUV">CUV(크로스오버SUV)</option>
             <option value="specialty">화물자동차/특수자동차</option>
             <option value="direct">그 외</option>
@@ -44,13 +44,13 @@
             <option value="white">흰색(White)</option>
             <option value="gray">회색(Gray)</option>
             <option value="silver">은색(Silver)</option>
-            <option value="blcak">검정(Black)</option>
+            <option value="black">검정(Black)</option>
             <option value="Blue">파랑(Blue)</option>
             <option value="red">빨강(Red)</option>
-            <option value="">밤색(Brown)</option>
-            <option value="">노랑(Yellow)</option>
-            <option value="">금색(Gold)</option>
-            <option value="">초록(Green)</option>
+            <option value="Brown">밤색(Brown)</option>
+            <option value="Yellow">노랑(Yellow)</option>
+            <option value="Gold">금색(Gold)</option>
+            <option value="Green">초록(Green)</option>
             <option value="direct">그 외</option>
           </select>
         </div>
@@ -67,7 +67,6 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
@@ -75,7 +74,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오 </button>
-                <button type="button" class="btn btn-primary" onclick="signUpConfirm()">예</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="signUpConfirm()">예</button>
               </div>
             </div>
           </div>
@@ -84,7 +83,6 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
@@ -136,7 +134,7 @@
 
   function signUpConfirm(){
     carInfo.carNumber = $("#carNumber").val();
-    carInfo.manufacturer = $("#carNumber").val();
+    carInfo.manufacturer = $("#manufacturer").val();
     carInfo.carType = $("#carType").val();
     carInfo.carColor = $("#carColor").val();
     console.log(carInfo)

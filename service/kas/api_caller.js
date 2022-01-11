@@ -8,7 +8,6 @@ class ApiCaller {
     async call(options) {
         options.url = this.endpoint + options.url;
         options.json = true;
-
         if(!options.headers) options.headers = {};
 
         options.headers['x-chain-id'] = '1001';

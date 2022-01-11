@@ -11,6 +11,9 @@ router.post("/userRegister", async (req, res) => {
     console.log('register called');
     await User.signUp(req, res);
 });
+router.get("/resignMember", async (req, res) => {
+    await User.resignMember(req, res);
+})
 router.get("/login", (req, res) => { res.render('../views/login') });
 router.post("/login", (req, res) => {
     console.log("login called");
@@ -29,8 +32,11 @@ router.post("/carRegister", async (req, res) => {
 })
 
 router.get("/carCheck", (req, res) => {
-    User.carCheck(req, res)
+    User.carCheck(req, res);
 });
 
+router.delete("/carDelete", (req, res) => {
+    User.carDelete(req, res);
+})
 
 module.exports = router;

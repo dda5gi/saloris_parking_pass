@@ -6,6 +6,7 @@
   <body>
     <%-include('nav.ejs') %>
     <div class="accordion" id="carInfoListAccordion">
+      <% if(result != 'empty') {result.sort()}%>
       <% for(var i=0; i<result.length; i++) { %>
       <div class="accordion-item">
         <h2 class="accordion-header" id="heading_<%=i+1 %>">
@@ -20,12 +21,76 @@
               <li class="list-group-item">제조사 : <%= result[i].manufacturer %></li>
               <li class="list-group-item">색상 : <%= result[i].carColor %></li>
               <li class="list-group-item">소유주 : <%= result[i].userId %></li>
+              <li class="list-group-item">
+                <button class="btn btn-info" id="carDrop<%=i %>" onclick="$('#confirmModal<%=i %>').modal('show')">등록 삭제하기</button>
+              </li>
             </ul>
           </div>
         </div>
       </div>
-      <% } %>
+
+      <div class="modal fade" id="confirmModal<%=i %>" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>삭제하시겠습니까?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오 </button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="carDrop('<%=i%>')">예</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div class="modal fade" id="completeModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>삭제가 완료되었습니다</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="location.href='/carCheck'">확인</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+    <script>
+
+      var carList = <%- JSON.stringify(result) %>;
+      var idList = new Array();
+      carList.forEach(element => {
+        idList.push(element._id)
+      });
+
+      function carDrop(i){
+        var msg = {};
+        msg.carId = idList[i]
+        console.log(msg);
+
+        var ajax = $.ajax({
+          url: "/carDelete",
+          data: msg,
+          type: "DELETE",
+          dataType: "JSON",
+          success: function (res) {
+            if(res.msg === 'fail'){
+              alert('삭제 실패')
+            } else{
+              $('#completeModal').modal('show');  
+            }
+          }
+        });
+      }
+    </script>
 
   </body>
 

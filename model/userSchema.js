@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     realname: String,
     kasPublicKey: { type: String, required: true },
     kasAddress: { type: String, required: true },
+    kasKeyId: {type: String, required: true},
     carId: []
 });
 
