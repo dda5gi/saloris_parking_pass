@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     regDate: { type: Date, default: Date.now },
     realname: String,
+    fbToken: String,
     kasPublicKey: { type: String, required: true },
     kasAddress: { type: String, required: true },
     kasKeyId: {type: String, required: true},

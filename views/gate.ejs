@@ -9,76 +9,12 @@
           <h2 class="signup_title">Parking Pass 차단기</h2>
           <p></p>
           <div class="signup_form">
-            <label for="car01" class="form_label">차량번호</label>
-            <input type="text" id="car01" placeholder="123가4578" required />
+            <label for="carNumber" class="form_label">차량번호</label>
+            <input type="text" id="carNumber" placeholder="123가4578" required />
           </div>
 
-          <div class="signup_form">
-            <label for="car02" class="form_label">차단기 상태</label>
-            <label for="closeopen" class="form_label" style = "margin-left: 90px;" id = closeopen>닫힘</label>
-          </div>
-        
-          <!-- Modal -->
-          <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog  modal-sm">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                      aria-hidden="true">×</span></button>
-                  <h4 class="modal-title" id="myModalLabel">Parking Pass</h4>
-                </div>
-                <div class="modal-body">
-                  <p>등록된 차량입니다</p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal" onclick="changeUI()" >확인</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Modal -->
-          <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog  modal-sm">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                      aria-hidden="true">×</span></button>
-                  <h4 class="modal-title" id="myModalLabel">Parking Pass</h4>
-                </div>
-                <div class="modal-body">
-                  <p>등록되지 않은 차량입니다</p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal" >확인</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog  modal-sm">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                      aria-hidden="true">×</span></button>
-                  <h4 class="modal-title" id="myModalLabel">Parking Pass</h4>
-                </div>
-                <div class="modal-body">
-                  <p>사용자가 승인하지 않았습니다.</p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal" >확인</button>
-                </div>
-              </div>
-            </div>
-          </div>
-  
           <p></p>
-          <button class="submit-button" style="cursor:pointer" onclick="verify()">차량 검증</button>
+          <button class="submit-button" style="cursor:pointer" onclick="carNumberVerify()">입차</button>
   
         </section>
       </main>
@@ -94,68 +30,26 @@
   <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
   <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
   <script>
-    function Request(){
-      var requestParam ="";
-            this.getParameter = function(param){
-          var url = unescape(location.href); //현재 주소를 decoding
-            var paramArr = (url.substring(url.indexOf("?")+1,url.length)).split("&"); //파라미터만 자르고, 다시 &그분자를 잘라서 배열에 넣는다. 
-            for(var i = 0 ; i < paramArr.length ; i++){
-                var temp = paramArr[i].split("="); //파라미터 변수명을 담음
-                if(temp[0].toUpperCase() == param.toUpperCase()){
-                  requestParam = paramArr[i].split("=")[1]; // 변수명과 일치할 경우 데이터 삽입
-                    break;
-                }
-            }
-            return requestParam;
-        };
+    var carInfo = {};
+
+    function carNumberVerify(){
+      carInfo.carNumber = $("#carNumber").val();
+      console.log(carInfo)
+      var ajax = $.ajax({
+        url: "/gate",
+        data: carInfo,
+        type: "POST",
+        dataType: "JSON",
+        success: function (result) {
+          if(result.isSuccess === 'true'){
+            alert(result.msg);
+          } else{
+            alert(result.msg)
+          }
+        }
+      });
     }
-
-    var request = new Request();
-
-    var accountArray = []
-
-    $(document).ready(function () {
-        var info = localStorage.getItem("accountInfo")
-        var parsedinfo = JSON.parse(info)
-        accountArray.push(parsedinfo)
-        console.log(accountArray)
-    })
-
-    function verify(){
-        var query = $("#car01").val()
-        console.log(query)
-        console.log(accountArray[0]['carNumber'])
-      
-        if(query == accountArray[0]['carNumber']){
-            //alert('등록된 차량입니다')
-            $('#myModal').modal('show');  
-            //location.href='http://localhost:9000/?flag=1'
-        }
-        else{
-            //location.href='http://localhost:9000/?flag=2'
-            $('#myModal2').modal('show');  
-        }
-    }
-
-    function changeUI(){
-        var flag = request.getParameter('flag');
-        if(flag=='1'){
-            $('#myModal').modal('hide');  
-            $('#myModal3').modal('show');  
-        }
-        else{
-            $('#closeopen').hide();
-            $('#closeopen').text('열림');
-            $('#closeopen').show();
-
-            var close2 = setTimeout(function(){
-                $('#closeopen').hide();
-                $('#closeopen').text('닫힘');
-                $('#closeopen').show();
-            }, 10000);
-        }
-    }
-
+   
   </script>
 <%-include('form.ejs') %>
 

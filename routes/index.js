@@ -1,10 +1,10 @@
 const express = require('express');
 const Car = require('../service/carCtr');
 const User = require('../service/userCtr');
+const Gate = require('../service/gateCtr')
 const router = express.Router();
 
 router.get("/", (req, res) => { res.render('../views/index') });
-router.get("/gate", (req, res) => { res.render('../views/gate') });
 
 router.get("/userRegister", (req, res) => { res.render('../views/userRegister') });
 router.post("/userRegister", async (req, res) => {
@@ -24,19 +24,35 @@ router.get("/logout", async (req, res) => {
     User.logout(req, res);
     res.redirect('/');
 })
+router.post("/insertFbToken", async (req, res) => {
+    console.log('insert fb token called');
+    User.insertFbToken(req, res);
+})
+router.delete("/deleteFbToken", async (req, res) => {
+    console.log('delete fb token called');
+    User.deleteFbToken(req, res);
+})
 
 router.get("/carRegister", (req, res) => { res.render('../views/carRegister') });
 router.post("/carRegister", async (req, res) => {
     console.log('carRegister called');
     await Car.carSignUp(req, res);
 })
-
 router.get("/carCheck", (req, res) => {
     User.carCheck(req, res);
 });
-
 router.delete("/carDelete", (req, res) => {
     User.carDelete(req, res);
+})
+
+router.get("/transaction", (req, res) => {
+    User.transaction(req, res);
+})
+
+router.get("/gate", (req, res) => { res.render('../views/gate') });
+router.post("/gate", async (req, res) => {
+    console.log('gate called');
+    await Gate.carNumberCheck(req, res);
 })
 
 module.exports = router;

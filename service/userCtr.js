@@ -4,6 +4,18 @@ const carCtr = require('./carCtr');
 const wallet = require('./kas/wallet');
 
 module.exports = {
+    transaction: async function(req, res) {
+        User.find( {loginId: req.cookies.userId}, async function(err, docs) {
+            if(docs[0]){
+                const txHash = await wallet.sendTransfer(docs[0].kasAddress, docs[0].kasAddress, '0x321');
+                console.log('Tx result hash : ', txHash);
+            }
+            else{
+                console.log('USER NOT FOUND');
+            }
+        })
+    },
+
     signUp: async function(req, res) {
         User.find( {loginId: req.body.loginId}, async function(err,docs) {
             if(docs[0]){
@@ -46,6 +58,9 @@ module.exports = {
                     maxAge:60*60*1000,
                     path:"/"
                 });
+                if(docs[0].fbToken) {
+                    res.cookie('fbToken', docs[0].fbToken)
+                }
                 res.json({msg: 'good' })
             }
             else{
@@ -60,7 +75,31 @@ module.exports = {
         res.clearCookie('realname');
     },
 
+    insertFbToken: async function(req, res) {
+        User.findOneAndUpdate(
+            {loginId : req.cookies.userId},
+            { $set: { fbToken: req.body.fbToken } },
+            function(err, docs) {
+                if(err) console.error(err);
+                console.log('fbToken insert')
+                res.cookie('fbToken', req.body.fbToken)
+                res.json({msg: 'good'})
+            }
+        )
+    },
 
+    deleteFbToken: async function(req, res) {
+        User.findOneAndUpdate(
+            {loginId : req.cookies.userId},
+            { $unset: { fbToken: '' } },
+            function(err, docs) {
+                if(err) console.error(err);
+                console.log('fbToken delete')
+                res.clearCookie('fbToken');
+                res.json({msg: 'good'})
+            }
+        )
+    },
 
     //반드시 Key삭제 후 account를 삭제해야 키 사용량이 감소함
     //순서 어기면 계정은 삭제되고 키 사용량은 감소 안해서 복구 불가

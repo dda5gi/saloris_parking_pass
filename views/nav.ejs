@@ -16,13 +16,19 @@
             <a class="nav-link" href="/carCheck" id="carCheck" style="display: none">차량 조회</a>
           </li>
           <li class="nav-item">
-              <button class="btn btn-info" id="login" onclick="location.href='/login'">로그인</button>
+              <button class="btn btn-dark" id="login" onclick="location.href='/login'">로그인</button>
           </li>
           <li class="nav-item">
-            <button class="btn btn-info" id="logout" onclick="location.href='/logout'" style="display: none">로그아웃</button>
+            <button class="btn btn-dark" id="logout" onclick="location.href='/logout'" style="display: none">로그아웃</button>
           </li>
           <li class="nav-item">
             <button class="btn btn-info" id="userRegister" onclick="location.href='/userRegister'">회원가입</button>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-success" id="pushOn" onclick="pushOn()" style="display: none">알림 켜기</button>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-success" id="pushOff" onclick="pushOff()" style="display: none">알림 끄기</button>
           </li>
         </ul>
       </div>
@@ -30,24 +36,114 @@
 </nav>
 
 <script>
-    // 쿠키 읽고 맞춰서 HTML 그리기
-    function readCookie(key) {
-      console.log(document.cookie);
-      var cookie = document.cookie;
-      cookie = cookie.split(';');
-      console.log(cookie);
-      cookie.some(function (item) {
-            item = item.replace(' ', '');
-            var dic = item.split('=');
-            if (key === dic[0]) {
-              $('#logout').show();
-              $('#login').hide();
-              $('#userRegister').hide();
-              $('#carRegister').show();
-              $('#carCheck').show();
-              return;
-            }
-        });
+  
+    var firebaseConfig = {
+        apiKey: "AIzaSyDj_7i_joBFaiCd2Asol8GTJTEpwBrJOeM",
+        authDomain: "saloris-test.firebaseapp.com",
+        projectId: "saloris-test",
+        storageBucket: "saloris-test.appspot.com",
+        messagingSenderId: "81120770308",
+        appId: "1:81120770308:web:9ca1a802dce84c077c7851",
+        measurementId: "G-BW34QCLKVB"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const messaging = firebase.messaging();
+
+    let enableForegroundNotification = true;
+    messaging.onMessage(function (payload) {
+        console.log('Message received. ', payload);
+
+        if (enableForegroundNotification) {
+            let notification = payload.notification;
+            navigator.serviceWorker
+                .getRegistrations()
+                .then((registration) => {
+                    registration[0].showNotification(notification.title);
+                });
+        }
+    });
+
+    var userIdCookie, fbTokenCookie = '';
+    var cookie = document.cookie;
+    cookie = cookie.split(';');
+    cookie.some(function (item) {
+      item = item.replace(' ', '');
+      var dic = item.split('=');
+      if (dic[0] === 'userId') {
+        userIdCookie = dic[1]
+      }
+      if(dic[0] === 'fbToken') {
+        fbTokenCookie = dic[1]
+      }
+    });
+    if(userIdCookie){
+      $('#logout').show();
+      $('#login').hide();
+      $('#userRegister').hide();
+      $('#carRegister').show();
+      $('#carCheck').show();
+      $('#pushOn').show();
+      $('#pushOff').hide();
+      if(fbTokenCookie){
+        $('#pushOn').hide();
+        $('#pushOff').show();
+      }
     }
-    readCookie('userId');
+
+    function pushOn() {
+      messaging.requestPermission().then(function () {
+          console.log('Notification permission granted.');
+          return messaging.getToken();
+      }).then(function (token) {
+          console.log('Device token issued => ', token)
+          ajaxData = {fbToken : token}
+
+          var ajax = $.ajax({
+            url: "/insertFbToken",
+            data: ajaxData,
+            type: "POST",
+            dataType: "JSON",
+            success: function (result) {
+              if(result.msg === 'good'){
+                alert('입차 알림이 켜졌습니다.')
+                $('#pushOn').hide();
+                $('#pushOff').show();
+              } else{
+                alert('입차 알림 등록 실패')
+              }
+            }
+          });
+      }).catch(function (err) {
+          console.log('Unable to get permission to notify.', err);
+      });
+    }
+
+    function pushOff() {
+      messaging.requestPermission().then(function () {
+        console.log('Notification permission granted.');
+        return messaging.getToken();
+      }).then(function (token) {
+        messaging.deleteToken(token);
+        console.log('Device token deleted');
+        ajaxData = {fbToken : token}
+          var ajax = $.ajax({
+            url: "/deleteFbToken",
+            data: ajaxData,
+            type: "DELETE",
+            dataType: "JSON",
+            success: function (result) {
+              if(result.msg === 'good'){
+                alert('입차 알림이 꺼졌습니다.')
+                $('#pushOn').show();
+                $('#pushOff').hide();
+              } else{
+                alert('입차 알림 해제 실패')
+              }
+            }
+          });
+      }).catch(function (err) {
+        console.log('Unable to get permission to notify.', err);
+      });
+    }
   </script>

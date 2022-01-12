@@ -64,9 +64,9 @@
     </div>
     <% } %>
     <script>
-
       var carList = <%- JSON.stringify(result) %>;
       var idList = new Array();
+
       carList.forEach(element => {
         idList.push(element._id)
       });

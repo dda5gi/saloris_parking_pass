@@ -36,6 +36,24 @@ class Wallet extends ApiCaller {
         const res = await this.call(options);
         return res.status;
     }
+
+    async sendTransfer(from, to, memo) {
+        const options = {
+            method: 'POST',
+            url: '/v2/tx/fd/value',
+            body: {
+                from: from,
+                to: to,
+                value: "0x0",
+                memo: memo,
+                submit: true,
+            },
+            json: true,
+        };
+        const res = await this.call(options);
+        console.log('[sendTransfer Called]', res);
+        return res.transactionHash;
+    }
 }
 
 const wallet = new Wallet();
