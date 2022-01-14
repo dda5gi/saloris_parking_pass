@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-      <a class="navbar-brand mb-0 h1" href="#">Parking pass</a>
+      <a class="navbar-brand mb-0 h1">Parking pass</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -10,10 +10,10 @@
             <a class="nav-link active" aria-current="page" href="/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/carRegister" id="carRegister" style="display: none">차량 등록</a>
+            <a class="nav-link active" href="/carRegister" id="carRegister" style="display: none">차량 등록</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/carCheck" id="carCheck" style="display: none">차량 조회</a>
+            <a class="nav-link active" href="/carCheck" id="carCheck" style="display: none">차량 조회</a>
           </li>
           <li class="nav-item">
               <button class="btn btn-dark" id="login" onclick="location.href='/login'">로그인</button>
@@ -50,20 +50,18 @@
 
     const messaging = firebase.messaging();
 
-    let enableForegroundNotification = true;
+    // let enableForegroundNotification = true;
     messaging.onMessage(function (payload) {
-        console.log('Message received. ', payload);
+        console.log('Message Foreground received. ', payload);
 
-        if (enableForegroundNotification) {
-            let notification = payload.notification;
-            navigator.serviceWorker
-                .getRegistrations()
-                .then((registration) => {
-                    registration[0].showNotification(notification.title);
-                });
-        }
+        let notification = payload.data;
+        navigator.serviceWorker
+            .getRegistrations()
+            .then((registration) => {
+                registration[0].showNotification(notification.title, notification);
+            });
     });
-
+    
     var userIdCookie, fbTokenCookie = '';
     var cookie = document.cookie;
     cookie = cookie.split(';');

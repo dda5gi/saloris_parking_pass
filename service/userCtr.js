@@ -3,17 +3,12 @@ const Car = require('../model/carSchema');
 const carCtr = require('./carCtr');
 const wallet = require('./kas/wallet');
 
+
 module.exports = {
-    transaction: async function(req, res) {
-        User.find( {loginId: req.cookies.userId}, async function(err, docs) {
-            if(docs[0]){
-                const txHash = await wallet.sendTransfer(docs[0].kasAddress, docs[0].kasAddress, '0x321');
-                console.log('Tx result hash : ', txHash);
-            }
-            else{
-                console.log('USER NOT FOUND');
-            }
-        })
+    transaction: async function(from, to, data) {
+        let encData = wallet.dataEncrypt(data)
+        const txHash = await wallet.sendTransfer(from, to, encData);
+        console.log('Tx result hash : ', txHash);
     },
 
     signUp: async function(req, res) {
@@ -49,15 +44,14 @@ module.exports = {
     },
 
     signIn: async function(req, res) {
+        process.emit('customEvent');
+
         User.find( {loginId: req.body.loginId}, async function(err,docs) { 
             if(docs[0] && docs[0].password == req.body.password){
                 console.log('user', docs[0].loginId, 'logined')
                 console.log('P/W MATCHED');
                 res.cookie('userId', req.body.loginId);
-                res.cookie('realname', docs[0].realname, {
-                    maxAge:60*60*1000,
-                    path:"/"
-                });
+                res.cookie('realname', docs[0].realname);
                 if(docs[0].fbToken) {
                     res.cookie('fbToken', docs[0].fbToken)
                 }

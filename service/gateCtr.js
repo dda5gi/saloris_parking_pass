@@ -1,28 +1,49 @@
 const User = require('../model/userSchema');
 const Car = require('../model/carSchema');
+const fcm = require('./fcm/fcm');
+const userCtr = require('./userCtr')
 
 module.exports = {
     carNumberCheck: async function(req, res) {
-        Car.find( {carNumber: req.body.carNumber}, async function(err, docs) {
-            if(docs[0]){
-                inp = docs[0]._id.toString()
-                User.find( {carId : [inp]} , async function(err, docs2){
-                    console.log(docs2[0].fbToken)
+        Car.find( {carNumber: req.body.carNumber}, async function(err, carDoc) {
+            if(carDoc[0]){
+                carId = carDoc[0]._id.toString()
+                User.find( {carId : carId} , async function(err, userDoc){
+                    if(userDoc[0].fbToken){
+                        userCtr.transaction(userDoc[0].kasAddress, userDoc[0].kasAddress, req.body.carNumber);
+                        // timer = setTimeout(() => {
+                        //     console.log("TIME OUT !!!")
+                        //     process.removeAllListeners('customEvent')
+                        // }, 2000);
+                        // process.once('customEvent', function() {
+                        //     clearTimeout(timer)
+                        //     console.log("수신 확인")
+                        // });
+
+                        /*
+                        1회용 이벤트 리스너 호출
+                        페이지 응답 대기
+                        응답에 따른 res 리턴 해주기
+
+                        once리스너 -> 타이머 n초 작동 -> 응답 대기
+                        -> 미응답 시 remove 리스너
+ 
+                        응답 받을 때 사용자 식별은 어떻게??
+                        이벤트 수신 이름을 사용자ID로 지정한다.
+                        */
+
+                        data = {
+                            title: '[입차 알림]',
+                            body: userDoc[0].realname+'님 ['+carDoc[0].carNumber+'] 차량 입차 하였습니다.'
+                        }
+                        fcm.fcmSendMessage(data, userDoc[0].fbToken)
+                    }else{
+                        console.log('소유주 알림 꺼져있음')
+                    }
                 })
-                /*
-                1. 차량에 해당하는 유저 토큰 찾기 (스키마 수정 필요)
-                2. FCM으로 토큰에 푸쉬 메세지 보내기
-                메세지-> 승인 페이지 리다이렉팅
-                -> 서버로 승인/거부 POST 통신
-                -> 서버 응답 수신 -> 차단기로 전송.. (POST???)
-
-                또는 XMPP로 메세지 업스트림 구축?? -> 불가능 예상
-
-                fcm 호출 -> 승인 결과 response 코드 필요
-                */
                 res.json({
                     isSuccess: 'true',
-                    msg: 'open'
+                    msg: '알림 전송됨'
                 })
             }else{
                 console.log("carNumber not matched")

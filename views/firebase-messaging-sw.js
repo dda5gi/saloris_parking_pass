@@ -2,10 +2,6 @@ importScripts("https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js");
 importScripts(
     "https://www.gstatic.com/firebasejs/7.16.1/firebase-messaging.js",
 );
-// For an optimal experience using Cloud Messaging, also add the Firebase SDK for Analytics.
-importScripts(
-    "https://www.gstatic.com/firebasejs/7.16.1/firebase-analytics.js",
-);
 
 // Initialize the Firebase app in the service worker by passing in the
 // messagingSenderId.
@@ -22,19 +18,19 @@ firebase.initializeApp({
 // Retrieve an instance of Firebase Messaging so that it can handle background
 // messages.
 const messaging = firebase.messaging();
+let enableForegroundNotification = true;
 
+//크롬 서비스 워커에서 백그라운드 알림 수신을 처리한다.
 messaging.setBackgroundMessageHandler(function(payload) {
-    console.log(
+    console.log(    
         "[firebase-messaging-sw.js] Received background message ",
         payload,
     );
     // Customize notification here
-    const notificationTitle = "Background Message Title";
+    const notificationTitle = payload.data.title;
     const notificationOptions = {
-        body: "Background Message body.",
-        icon: "/itwonders-web-logo.png",
+        body: payload.data.body
     };
-
     return self.registration.showNotification(
         notificationTitle,
         notificationOptions,

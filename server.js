@@ -21,8 +21,6 @@ db.once('open', function() {
     console.log('MongoDB Connected!');
 });
 
-// app.engine('html', require('ejs').renderFile);
-// app.set('view engine', 'html');
 app.set('view engine', 'ejs')
 
 app.use(bodyParser.json());

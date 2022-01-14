@@ -45,10 +45,6 @@ router.delete("/carDelete", (req, res) => {
     User.carDelete(req, res);
 })
 
-router.get("/transaction", (req, res) => {
-    User.transaction(req, res);
-})
-
 router.get("/gate", (req, res) => { res.render('../views/gate') });
 router.post("/gate", async (req, res) => {
     console.log('gate called');
