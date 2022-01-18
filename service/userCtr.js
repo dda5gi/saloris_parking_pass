@@ -5,12 +5,6 @@ const wallet = require('./kas/wallet');
 
 
 module.exports = {
-    transaction: async function(from, to, data) {
-        let encData = wallet.dataEncrypt(data)
-        const txHash = await wallet.sendTransfer(from, to, encData);
-        console.log('Tx result hash : ', txHash);
-    },
-
     signUp: async function(req, res) {
         User.find( {loginId: req.body.loginId}, async function(err,docs) {
             if(docs[0]){
@@ -44,8 +38,6 @@ module.exports = {
     },
 
     signIn: async function(req, res) {
-        process.emit('customEvent');
-
         User.find( {loginId: req.body.loginId}, async function(err,docs) { 
             if(docs[0] && docs[0].password == req.body.password){
                 console.log('user', docs[0].loginId, 'logined')
@@ -55,10 +47,11 @@ module.exports = {
                 if(docs[0].fbToken) {
                     res.cookie('fbToken', docs[0].fbToken)
                 }
-                res.json({msg: 'good' })
+                res.json({msg: 'true' })
             }
             else{
                 console.log('SIGN IN ERROR');
+                res.json({msg: 'false' })
             }
         });
     },
@@ -71,7 +64,7 @@ module.exports = {
 
     insertFbToken: async function(req, res) {
         User.findOneAndUpdate(
-            {loginId : req.cookies.userId},
+            {loginId : req.body.loginId},
             { $set: { fbToken: req.body.fbToken } },
             function(err, docs) {
                 if(err) console.error(err);
@@ -84,7 +77,7 @@ module.exports = {
 
     deleteFbToken: async function(req, res) {
         User.findOneAndUpdate(
-            {loginId : req.cookies.userId},
+            {loginId : req.body.loginId},
             { $unset: { fbToken: '' } },
             function(err, docs) {
                 if(err) console.error(err);

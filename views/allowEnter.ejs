@@ -1,0 +1,76 @@
+<!DOCTYPE html5>
+<html>
+  <%-include('head.ejs') %>
+
+  <body>
+    <div class="mycontainer">
+      <main id="main">
+        <section class="signup">
+          <h2 class="signup_title">입차 승인</h2>
+          <p></p>
+          <div class="signup_form">
+            <!-- <label for="carNumber" class="form_label">차량번호</label> -->
+          </div>
+
+          <p></p>
+          <div class="container">
+            <div class="row">
+              <div class="col"></div>
+              <button class="submit-button col" style="cursor:pointer" onclick="allow()">승인</button>
+              <div class="col"></div>
+              <button class="submit-button col" style="cursor:pointer" onclick="deny()">거부</button>
+              <div class="col"></div>
+            </div>
+          </div>
+          
+        </section>
+      </main>
+
+      <footer class="footer">
+        <a href="https://saloris.world">(주)사로리스</a>
+      </footer>
+    </div>
+   
+  </body>
+
+  <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
+  <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
+  <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
+  <script>
+    function allow(){
+      var ajax = $.ajax({
+        url: "/allowEnter",
+        data: {'msg': 'allow'},
+        type: "POST",
+        dataType: "JSON",
+        success: function (result) {
+          if(result.isSuccess === 'true'){
+          } else{
+            // alert(result.msg)
+          }
+        }
+      });
+      location.href='/'
+    }
+
+    function deny(){
+      var ajax = $.ajax({
+        url: "/allowEnter",
+        data: {'msg': 'deny'},
+        type: "POST",
+        dataType: "JSON",
+        success: function (result) {
+          if(result.isSuccess === 'true'){
+          } else{
+            // alert(result.msg)
+          }
+        }
+      });
+      location.href='/'
+    }
+   
+  </script>
+<%-include('form.ejs') %>
+
+</html>
+

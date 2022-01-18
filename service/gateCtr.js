@@ -1,7 +1,7 @@
 const User = require('../model/userSchema');
 const Car = require('../model/carSchema');
 const fcm = require('./fcm/fcm');
-const userCtr = require('./userCtr')
+const wallet = require('./kas/wallet');
 
 module.exports = {
     carNumberCheck: async function(req, res) {
@@ -9,47 +9,73 @@ module.exports = {
             if(carDoc[0]){
                 carId = carDoc[0]._id.toString()
                 User.find( {carId : carId} , async function(err, userDoc){
+                    //유저 토큰이 있는 경우 로직 진행
                     if(userDoc[0].fbToken){
-                        userCtr.transaction(userDoc[0].kasAddress, userDoc[0].kasAddress, req.body.carNumber);
-                        // timer = setTimeout(() => {
-                        //     console.log("TIME OUT !!!")
-                        //     process.removeAllListeners('customEvent')
-                        // }, 2000);
-                        // process.once('customEvent', function() {
-                        //     clearTimeout(timer)
-                        //     console.log("수신 확인")
-                        // });
-
-                        /*
-                        1회용 이벤트 리스너 호출
-                        페이지 응답 대기
-                        응답에 따른 res 리턴 해주기
-
-                        once리스너 -> 타이머 n초 작동 -> 응답 대기
-                        -> 미응답 시 remove 리스너
- 
-                        응답 받을 때 사용자 식별은 어떻게??
-                        이벤트 수신 이름을 사용자ID로 지정한다.
-                        */
-
                         data = {
-                            title: '[입차 알림]',
-                            body: userDoc[0].realname+'님 ['+carDoc[0].carNumber+'] 차량 입차 하였습니다.'
+                            "notification": {
+                                "title": '[입차 알림]',
+                                "body": userDoc[0].realname
+                                + '님 ' + carDoc[0].carNumber
+                                + '차량 입차 승인 바랍니다.'
+                            },
+                            "webpush": {
+                                "fcm_options": {
+                                "link": "http://localhost:3000/allowEnter"
+                                }
+                            },
+                            "token": userDoc[0].fbToken
+                            // "token": "djs6FVj-Svy30SnIQ56hBo:APA91bFhRdZcFH8ULWYEiMUDOF_uFazY4WCM03z3V-7WHUXxFuwuFQezjLaL7NxvPROzSRYy5CGdEmxeFQuzauiNhJcibYbuOmIJ33oFnC_3PIlagVNRKPbVItV1SUgBLzJ__rodkFuP"
+
                         }
-                        fcm.fcmSendMessage(data, userDoc[0].fbToken)
+                        // 알림 전송
+                        fcm.fcmSendMessage(data)
+
+                        //입차 타이머 시작->시간 초과->이벤트 리스너 OFF
+                        gateTimer = setTimeout(() => {
+                            console.log("입차 대기 TIME OUT !!!")
+                            process.removeAllListeners()
+                            res.json({
+                                isSuccess: 'false',
+                                msg: '승인 대기시간 초과'
+                            })
+                        }, 5000);
+
+                        //입차승인 이벤트 리스너->호출 시 타이머 OFF
+                        process.once('allow', async function() {
+                            process.removeAllListeners()
+                            clearTimeout(gateTimer)
+                            console.log(req.body.carNumber, "입차 승인")
+                            let encData = wallet.dataEncrypt(req.body.carNumber)
+                            const txHash = await wallet.sendTransfer(userDoc[0].kasAddress, userDoc[0].kasAddress, encData);
+                            console.log('Tx result hash : ', txHash);
+                            res.json({
+                                isSuccess: 'true',
+                                msg: '입차 승인'
+                            })
+                        });
+                        //입차거부 이벤트 리스너->호출 시 타이머 OFF
+                        process.once('deny', function() {
+                            process.removeAllListeners()
+                            clearTimeout(gateTimer)
+                            console.log("입차 거부")
+                            res.json({
+                                isSuccess: 'false',
+                                msg: '입차 거부'
+                            })
+                        });
                     }else{
                         console.log('소유주 알림 꺼져있음')
+                        res.json({
+                            isSuccess: 'false',
+                            msg: '차량 소유주의 알림이 비활성화 되어 있습니다.'
+                        })
                     }
-                })
-                res.json({
-                    isSuccess: 'true',
-                    msg: '알림 전송됨'
                 })
             }else{
                 console.log("carNumber not matched")
                 res.json({
                     isSuccess: 'false',
-                    msg: 'carNumber not matched'
+                    msg: '등록되지 않은 차량입니다.'
                 })
             }
         })

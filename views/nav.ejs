@@ -36,33 +36,7 @@
 </nav>
 
 <script>
-  
-    var firebaseConfig = {
-        apiKey: "AIzaSyDj_7i_joBFaiCd2Asol8GTJTEpwBrJOeM",
-        authDomain: "saloris-test.firebaseapp.com",
-        projectId: "saloris-test",
-        storageBucket: "saloris-test.appspot.com",
-        messagingSenderId: "81120770308",
-        appId: "1:81120770308:web:9ca1a802dce84c077c7851",
-        measurementId: "G-BW34QCLKVB"
-    };
-    firebase.initializeApp(firebaseConfig);
-
-    const messaging = firebase.messaging();
-
-    // let enableForegroundNotification = true;
-    messaging.onMessage(function (payload) {
-        console.log('Message Foreground received. ', payload);
-
-        let notification = payload.data;
-        navigator.serviceWorker
-            .getRegistrations()
-            .then((registration) => {
-                registration[0].showNotification(notification.title, notification);
-            });
-    });
-    
-    var userIdCookie, fbTokenCookie = '';
+  var userIdCookie, fbTokenCookie = '';
     var cookie = document.cookie;
     cookie = cookie.split(';');
     cookie.some(function (item) {
@@ -88,14 +62,46 @@
         $('#pushOff').show();
       }
     }
+  
+    var firebaseConfig = {
+        apiKey: "AIzaSyDj_7i_joBFaiCd2Asol8GTJTEpwBrJOeM",
+        authDomain: "saloris-test.firebaseapp.com",
+        projectId: "saloris-test",
+        storageBucket: "saloris-test.appspot.com",
+        messagingSenderId: "81120770308",
+        appId: "1:81120770308:web:9ca1a802dce84c077c7851",
+        measurementId: "G-BW34QCLKVB"
+    };
+    firebase.initializeApp(firebaseConfig);
 
+    const messaging = firebase.messaging();
+
+    // let enableForegroundNotification = true;
+    messaging.onMessage(function (payload) {
+        console.log('Message Foreground received. ', payload);
+
+        const notificationTitle = payload.notification.title;
+        const notificationOptions = {
+            body: payload.notification.body,
+        };
+
+        navigator.serviceWorker
+            .getRegistrations()
+            .then((registration) => {
+                registration[0].showNotification(
+                  notificationTitle,
+                  notificationOptions,
+                );
+            });
+    });
+    
     function pushOn() {
       messaging.requestPermission().then(function () {
           console.log('Notification permission granted.');
           return messaging.getToken();
       }).then(function (token) {
           console.log('Device token issued => ', token)
-          ajaxData = {fbToken : token}
+          ajaxData = {loginId : userIdCookie, fbToken : token}
 
           var ajax = $.ajax({
             url: "/insertFbToken",
@@ -124,7 +130,7 @@
       }).then(function (token) {
         messaging.deleteToken(token);
         console.log('Device token deleted');
-        ajaxData = {fbToken : token}
+        ajaxData = {loginId : userIdCookie, fbToken : token}
           var ajax = $.ajax({
             url: "/deleteFbToken",
             data: ajaxData,

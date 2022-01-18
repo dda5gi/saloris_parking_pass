@@ -51,4 +51,15 @@ router.post("/gate", async (req, res) => {
     await Gate.carNumberCheck(req, res);
 })
 
+router.get("/allowEnter", (req, res) => { res.render('../views/allowEnter') });
+router.post("/allowEnter", (req, res) => {
+    console.log('gate open response received');
+    if(req.body.msg === 'allow'){
+        process.emit('allow');
+    }
+    else{
+        process.emit('deny');
+    }
+})
+
 module.exports = router;

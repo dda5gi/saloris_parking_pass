@@ -36,3 +36,25 @@ messaging.setBackgroundMessageHandler(function(payload) {
         notificationOptions,
     );
 });
+
+//노티 알림 클릭 동작 코드 -> 긁어온거라 상세 구동은 모름
+self.addEventListener('notificationclick', function (event) {
+    console.debug('SW notification click event', event)
+    const url = 'http://localhost:3000/allowEnter'
+    event.waitUntil(
+      clients.matchAll({type: 'window'}).then( windowClients => {
+          // Check if there is already a window/tab open with the target URL
+          for (var i = 0; i < windowClients.length; i++) {
+              var client = windowClients[i];
+              // If so, just focus it.
+              if (client.url === url && 'focus' in client) {
+                  return client.focus();
+              }
+          }
+          // If not, then open the target URL in a new window/tab.
+          if (clients.openWindow) {
+              return clients.openWindow(url);
+          }
+      })
+  );
+})  
