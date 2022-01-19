@@ -36,53 +36,86 @@
 </nav>
 
 <script>
-  var userIdCookie, fbTokenCookie = '';
-    var cookie = document.cookie;
-    cookie = cookie.split(';');
-    cookie.some(function (item) {
-      item = item.replace(' ', '');
-      var dic = item.split('=');
-      if (dic[0] === 'userId') {
-        userIdCookie = dic[1]
-      }
-      if(dic[0] === 'fbToken') {
-        fbTokenCookie = dic[1]
-      }
-    });
-    if(userIdCookie){
-      $('#logout').show();
-      $('#login').hide();
-      $('#userRegister').hide();
-      $('#carRegister').show();
-      $('#carCheck').show();
-      $('#pushOn').show();
-      $('#pushOff').hide();
-      if(fbTokenCookie){
+  function mobileDraw() { // 모바일의 경우 알림 ON/OFF 버튼 없앰
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         $('#pushOn').hide();
-        $('#pushOff').show();
+        $('#pushOff').hide();
+      }
+  }
+
+  function tokenDraw() {
+    if(userIdCookie !== ''){
+      if(fbTokenCookie === ''){ // 서버에 등록된 토큰이 없다
+        $('#pushOn').show();
+      }
+      if(deviceToken === ''){ // getToken 실패 -> 버튼 다 꺼야함
+        $('#pushOn').hide();
+        $('#pushOff').hide();
+      }
+      if(fbTokenCookie !== '' & deviceToken !== ''){
+        if(fbTokenCookie == deviceToken){ // 디바이스와 서버 토큰 일치
+          $('#pushOn').hide();
+          $('#pushOff').show();
+        }
+        else { // 디바이스랑 서버 토큰이 다름 -> 알림을 원하면 갱신 시켜야 함
+          $('#pushOn').show();
+        }
       }
     }
+  }
   
+  var userIdCookie = fbTokenCookie = '';
+  var deviceToken = '';
+
+  var cookie = document.cookie;
+  cookie = cookie.split(';');
+  cookie.some(function (item) { // 쿠키 긁기
+    item = item.replace(' ', '');
+    var dic = item.split('=');
+    if (dic[0] === 'userId') {
+      userIdCookie = dic[1]
+      console.log( ' USER ID COOKIE : ', userIdCookie)
+    }
+    
+    if(dic[0] === 'fbToken') {
+      fbTokenCookie = decodeURIComponent(dic[1])
+      console.log(' TOKEN COOKIE : ', fbTokenCookie)
+    }
+  });
+
+  try{ // 구글 파이어베이스 기능은 https일때만 작동함 but localhost는 http로도 작동
+    // 외부에서 http로 접근할 경우 파이어베이스 미작동 -> 알림 ON/OFF 버튼 미출력 
     var firebaseConfig = {
-        apiKey: "AIzaSyDj_7i_joBFaiCd2Asol8GTJTEpwBrJOeM",
-        authDomain: "saloris-test.firebaseapp.com",
-        projectId: "saloris-test",
-        storageBucket: "saloris-test.appspot.com",
-        messagingSenderId: "81120770308",
-        appId: "1:81120770308:web:9ca1a802dce84c077c7851",
-        measurementId: "G-BW34QCLKVB"
+      apiKey: "AIzaSyDj_7i_joBFaiCd2Asol8GTJTEpwBrJOeM",
+      authDomain: "saloris-test.firebaseapp.com",
+      projectId: "saloris-test",
+      storageBucket: "saloris-test.appspot.com",
+      messagingSenderId: "81120770308",
+      appId: "1:81120770308:web:9ca1a802dce84c077c7851",
+      measurementId: "G-BW34QCLKVB"
     };
     firebase.initializeApp(firebaseConfig);
 
     const messaging = firebase.messaging();
 
+    messaging.requestPermission().then(function () { //기기 토큰 불러오기
+      console.log('Notification permission granted');
+      return messaging.getToken();
+    }).then(function (token) {
+        console.log('Device token => ', token)
+        deviceToken = token;
+        tokenDraw() // 디바이스 토큰을 다 읽어온 시점에 tokenDraw를 호출해야함...
+    }).catch(function (err) {
+        console.log('Unable to get permission to notify.', err);
+    });
+
     // let enableForegroundNotification = true;
-    messaging.onMessage(function (payload) {
+    messaging.onMessage(function (payload) { // 메세지 수신부분
         console.log('Message Foreground received. ', payload);
 
-        const notificationTitle = payload.notification.title;
+        const notificationTitle = payload.data.title;
         const notificationOptions = {
-            body: payload.notification.body,
+            body: payload.data.body,
         };
 
         navigator.serviceWorker
@@ -94,60 +127,60 @@
                 );
             });
     });
-    
-    function pushOn() {
-      messaging.requestPermission().then(function () {
-          console.log('Notification permission granted.');
-          return messaging.getToken();
-      }).then(function (token) {
-          console.log('Device token issued => ', token)
-          ajaxData = {loginId : userIdCookie, fbToken : token}
+  }catch(err) {
+    console.log(err);
+    tokenDraw()
+  }
 
-          var ajax = $.ajax({
-            url: "/insertFbToken",
-            data: ajaxData,
-            type: "POST",
-            dataType: "JSON",
-            success: function (result) {
-              if(result.msg === 'good'){
-                alert('입차 알림이 켜졌습니다.')
-                $('#pushOn').hide();
-                $('#pushOff').show();
-              } else{
-                alert('입차 알림 등록 실패')
-              }
-            }
-          });
-      }).catch(function (err) {
-          console.log('Unable to get permission to notify.', err);
-      });
-    }
+  if(userIdCookie){
+    $('#logout').show();
+    $('#login').hide();
+    $('#userRegister').hide();
+    $('#carRegister').show();
+    $('#carCheck').show();
+    $('#pushOn').show();
+    $('#pushOff').hide();
+  }
+  tokenDraw()
+  mobileDraw()
+  
+  function pushOn() {
+    ajaxData = {loginId : userIdCookie, fbToken : deviceToken}
 
-    function pushOff() {
-      messaging.requestPermission().then(function () {
-        console.log('Notification permission granted.');
-        return messaging.getToken();
-      }).then(function (token) {
-        messaging.deleteToken(token);
-        console.log('Device token deleted');
-        ajaxData = {loginId : userIdCookie, fbToken : token}
-          var ajax = $.ajax({
-            url: "/deleteFbToken",
-            data: ajaxData,
-            type: "DELETE",
-            dataType: "JSON",
-            success: function (result) {
-              if(result.msg === 'good'){
-                alert('입차 알림이 꺼졌습니다.')
-                $('#pushOn').show();
-                $('#pushOff').hide();
-              } else{
-                alert('입차 알림 해제 실패')
-              }
+    var ajax = $.ajax({
+      url: "/insertFbToken",
+      data: ajaxData,
+      type: "POST",
+      dataType: "JSON",
+      success: function (result) {
+        if(result.msg === 'true'){
+          alert('입차 알림이 켜졌습니다.')
+          $('#pushOn').hide();
+          $('#pushOff').show();
+          mobileDraw()
+        } else{
+          alert('입차 알림 등록 실패')
+        }
+      }
+    });
+  }
+
+  function pushOff() {
+      ajaxData = {loginId : userIdCookie}
+        var ajax = $.ajax({
+          url: "/deleteFbToken",
+          data: ajaxData,
+          type: "POST",
+          dataType: "JSON",
+          success: function (result) {
+            if(result.msg === 'true'){
+              alert('입차 알림이 꺼졌습니다.')
+              $('#pushOn').show();
+              $('#pushOff').hide();
+            } else{
+              alert('입차 알림 해제 실패')
             }
-          });
-      }).catch(function (err) {
-        console.log('Unable to get permission to notify.', err);
-      });
-    }
-  </script>
+          }
+        });
+  }
+</script>

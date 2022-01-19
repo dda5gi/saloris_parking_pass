@@ -28,7 +28,7 @@ router.post("/insertFbToken", async (req, res) => {
     console.log('insert fb token called');
     User.insertFbToken(req, res);
 })
-router.delete("/deleteFbToken", async (req, res) => {
+router.post("/deleteFbToken", async (req, res) => {
     console.log('delete fb token called');
     User.deleteFbToken(req, res);
 })

@@ -11,24 +11,29 @@ module.exports = {
                 User.find( {carId : carId} , async function(err, userDoc){
                     //유저 토큰이 있는 경우 로직 진행
                     if(userDoc[0].fbToken){
-                        data = {
-                            "notification": {
-                                "title": '[입차 알림]',
+                        message = {
+                            // 앱에서 백그, 포그 둘 다 같은 동작 하려면 noti 말고 data 사용해야함
+                            // "notification": {
+                            //     "title": '[입차 알림]',
+                            //     "body": userDoc[0].realname
+                            //     + '님 ' + carDoc[0].carNumber
+                            //     + '차량 입차 승인 바랍니다.'
+                            // },
+                            // "webpush": {
+                            //     "fcm_options": {
+                            //     "link": "http://localhost:3000/allowEnter"
+                            //     }
+                            // },
+                            data: {
+                                "title" : "[입차 알림]",
                                 "body": userDoc[0].realname
-                                + '님 ' + carDoc[0].carNumber
-                                + '차량 입차 승인 바랍니다.'
-                            },
-                            "webpush": {
-                                "fcm_options": {
-                                "link": "http://localhost:3000/allowEnter"
-                                }
+                                + '님 [' + carDoc[0].carNumber
+                                + ']차량 입차 승인 바랍니다.'
                             },
                             "token": userDoc[0].fbToken
-                            // "token": "djs6FVj-Svy30SnIQ56hBo:APA91bFhRdZcFH8ULWYEiMUDOF_uFazY4WCM03z3V-7WHUXxFuwuFQezjLaL7NxvPROzSRYy5CGdEmxeFQuzauiNhJcibYbuOmIJ33oFnC_3PIlagVNRKPbVItV1SUgBLzJ__rodkFuP"
-
                         }
                         // 알림 전송
-                        fcm.fcmSendMessage(data)
+                        fcm.fcmSendMessage(message)
 
                         //입차 타이머 시작->시간 초과->이벤트 리스너 OFF
                         gateTimer = setTimeout(() => {

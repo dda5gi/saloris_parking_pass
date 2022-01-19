@@ -46,8 +46,11 @@ module.exports = {
                 res.cookie('realname', docs[0].realname);
                 if(docs[0].fbToken) {
                     res.cookie('fbToken', docs[0].fbToken)
+                    res.json({msg: 'true', token: docs[0].fbToken})
+                    return;
                 }
-                res.json({msg: 'true' })
+                res.json({msg: 'true', token: 'false'})
+                return;
             }
             else{
                 console.log('SIGN IN ERROR');
@@ -60,6 +63,7 @@ module.exports = {
         console.log('LOG OUT REQUEST');
         res.clearCookie('userId');
         res.clearCookie('realname');
+        res.clearCookie('fbToken')
     },
 
     insertFbToken: async function(req, res) {
@@ -70,7 +74,7 @@ module.exports = {
                 if(err) console.error(err);
                 console.log('fbToken insert')
                 res.cookie('fbToken', req.body.fbToken)
-                res.json({msg: 'good'})
+                res.json({msg: 'true'})
             }
         )
     },
@@ -83,7 +87,7 @@ module.exports = {
                 if(err) console.error(err);
                 console.log('fbToken delete')
                 res.clearCookie('fbToken');
-                res.json({msg: 'good'})
+                res.json({msg: 'true'})
             }
         )
     },
