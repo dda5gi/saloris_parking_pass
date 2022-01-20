@@ -2,6 +2,8 @@ const User = require('../model/userSchema');
 const Car = require('../model/carSchema');
 const fcm = require('./fcm/fcm');
 const wallet = require('./kas/wallet');
+const waitTime = 5000; //서버가 유저 응답 기다릴 시간
+const fcmCompensateTime = 0; //FCM 전송 딜레이에 따른 시간 보정용
 
 module.exports = {
     carNumberCheck: async function(req, res) {
@@ -28,7 +30,8 @@ module.exports = {
                                 "title" : "[입차 알림]",
                                 "body": userDoc[0].realname
                                 + '님 [' + carDoc[0].carNumber
-                                + ']차량 입차 승인 바랍니다.'
+                                + ']차량 입차 승인 바랍니다.',
+                                "deadline" : (Date.now() + (waitTime-fcmCompensateTime)).toString(),
                             },
                             "token": userDoc[0].fbToken
                         }
@@ -43,7 +46,7 @@ module.exports = {
                                 isSuccess: 'false',
                                 msg: '승인 대기시간 초과'
                             })
-                        }, 5000);
+                        }, waitTime);
 
                         //입차승인 이벤트 리스너->호출 시 타이머 OFF
                         process.once('allow', async function() {

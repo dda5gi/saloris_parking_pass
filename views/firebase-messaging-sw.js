@@ -37,9 +37,10 @@ messaging.setBackgroundMessageHandler(function(payload) {
     );
 });
 
-//노티 알림 클릭 동작 코드 -> 긁어온거라 상세 구동은 모름
 self.addEventListener('notificationclick', function (event) {
-    console.debug('SW notification click event', event)
+    body = event.notification.body;
+    carNumber = body.split('[')[1].split(']')[0]; //차량 번호 파싱
+
     const url = 'http://localhost:3000/allowEnter'
     event.waitUntil(
       clients.matchAll({type: 'window'}).then( windowClients => {
@@ -53,7 +54,7 @@ self.addEventListener('notificationclick', function (event) {
           }
           // If not, then open the target URL in a new window/tab.
           if (clients.openWindow) {
-              return clients.openWindow(url);
+              return clients.openWindow(url+"?carNumber="+carNumber);
           }
       })
   );

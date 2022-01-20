@@ -48,7 +48,10 @@
         type: 'POST',
         dataType: "JSON",
         success: function (result) {
-          console.log(result);
+          if(result.msg == 'false'){
+            alert('로그인 실패')
+            return;
+          }
           location.href = "/";
         }
       });
