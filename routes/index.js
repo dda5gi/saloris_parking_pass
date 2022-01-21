@@ -39,12 +39,22 @@ router.post("/carRegister", async (req, res) => {
     console.log('carRegister called');
     await Car.carSignUp(req, res);
 })
-router.get("/carCheck", (req, res) => {
+router.get("/carCheck", async (req, res) => {
     User.carCheck(req, res);
-    tokenHistory.klayHistorty('0x17BC2B3c38d6b4D44A13e618c9f279057910c521');
 });
 router.delete("/carDelete", (req, res) => {
     User.carDelete(req, res);
+})
+
+router.get("/carEnterHistory", async (req, res) => {
+    res.render('../views/carEnterHistory')
+});
+router.post("/carEnterHistory", async (req, res) => {
+    let history
+    let cursor = req.body.cursor
+    history = await tokenHistory.klayHistorty('0x17BC2B3c38d6b4D44A13e618c9f279057910c521', cursor);
+    cursor = history.cursor;
+    res.json({history: history, cursor: cursor});
 })
 
 router.get("/gate", (req, res) => { res.render('../views/gate') });
