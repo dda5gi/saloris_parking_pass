@@ -37,10 +37,13 @@
   <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
   <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
   <script>
+    const urlParams = window.location.search;
+    function getParameterByName(name) { name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]"); var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search); return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " ")); }
+    const carNumber = getParameterByName('carNumber');
     function allow(){
       var ajax = $.ajax({
         url: "/allowEnter",
-        data: {'msg': 'allow'},
+        data: {'msg': 'allow'+carNumber},
         type: "POST",
         dataType: "JSON",
         success: function (result) {
@@ -56,7 +59,7 @@
     function deny(){
       var ajax = $.ajax({
         url: "/allowEnter",
-        data: {'msg': 'deny'},
+        data: {'msg': 'deny'+carNumber},
         type: "POST",
         dataType: "JSON",
         success: function (result) {
