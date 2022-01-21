@@ -2,6 +2,7 @@ const User = require('../model/userSchema');
 const Car = require('../model/carSchema');
 const fcm = require('./fcm/fcm');
 const wallet = require('./kas/wallet');
+const dataCrypt = require('./kas/dataCrypt');
 const waitTime = 20000; //서버가 유저 응답 기다릴 시간
 const fcmCompensateTime = 1500; //FCM 전송 딜레이에 따른 시간 보정용
 
@@ -54,7 +55,7 @@ module.exports = {
                             process.removeAllListeners("deny"+carDoc[0].carNumber)
                             clearTimeout(gateTimer)
                             console.log(req.body.carNumber, "입차 승인")
-                            let encData = wallet.dataEncrypt(req.body.carNumber)
+                            let encData = dataCrypt.dataEncrypt(req.body.carNumber)
                             const txHash = await wallet.sendTransfer(userDoc[0].kasAddress, userDoc[0].kasAddress, encData);
                             console.log('Tx result hash : ', txHash);
                             return res.json({

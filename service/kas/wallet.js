@@ -1,6 +1,4 @@
 const ApiCaller = require('./api_caller');
-const crypto = require('crypto');
-const dataKey = require('./kasDataKey.json')
 
 class Wallet extends ApiCaller {
     constructor() {
@@ -55,20 +53,6 @@ class Wallet extends ApiCaller {
         const res = await this.call(options);
         console.log('[sendTransfer Called] :', res.status);
         return res.transactionHash;
-    }
-
-    dataEncrypt(data) {
-        const cipher = crypto.createCipher('aes-256-cbc', dataKey.key);
-        let result = cipher.update(data, 'utf8', 'base64');
-        result += cipher.final('base64');
-        return result
-    }
-
-    dataDecrypt(data) {
-        const decipher = crypto.createDecipher('aes-256-cbc', dataKey.key);
-        let result = decipher.update(data, 'base64', 'utf8');
-        result += decipher.final('utf8');
-        return result;
     }
 }
 

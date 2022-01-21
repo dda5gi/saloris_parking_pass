@@ -1,7 +1,8 @@
 const express = require('express');
 const Car = require('../service/carCtr');
 const User = require('../service/userCtr');
-const Gate = require('../service/gateCtr')
+const Gate = require('../service/gateCtr');
+const tokenHistory = require('../service/kas/tokenHistory');
 const router = express.Router();
 
 router.get("/", (req, res) => { res.render('../views/index') });
@@ -40,6 +41,7 @@ router.post("/carRegister", async (req, res) => {
 })
 router.get("/carCheck", (req, res) => {
     User.carCheck(req, res);
+    tokenHistory.klayHistorty('0x17BC2B3c38d6b4D44A13e618c9f279057910c521');
 });
 router.delete("/carDelete", (req, res) => {
     User.carDelete(req, res);
