@@ -3,12 +3,14 @@ const Car = require('../model/carSchema');
 const fcm = require('./fcm/fcm');
 const wallet = require('./kas/wallet');
 const dataCrypt = require('./kas/dataCrypt');
-const waitTime = 20000; //서버가 유저 응답 기다릴 시간
-const fcmCompensateTime = 1500; //FCM 전송 딜레이에 따른 시간 보정용
+const waitTime = 20000; //서버가 유저 응답 기다릴 시간  
+const fcmCompensateTime = 1000; //FCM 전송 딜레이에 따른 시간 보정용
 
 module.exports = {
     carNumberCheck: async function(req, res) {
+        //Todo : 차량인식 종합 정보로 수정 필요
         Car.find( {carNumber: req.body.carNumber}, async function(err, carDoc) {
+            if(err) console.error(err);
             if(carDoc[0]){
                 carId = carDoc[0]._id.toString()
                 User.find( {carId : carId} , async function(err, userDoc){

@@ -50,15 +50,12 @@ router.get("/carEnterHistory", async (req, res) => {
     res.render('../views/carEnterHistory')
 });
 router.post("/carEnterHistory", async (req, res) => {
-    let history
-    let cursor = req.body.cursor
-    history = await tokenHistory.klayHistorty('0x17BC2B3c38d6b4D44A13e618c9f279057910c521', cursor);
-    cursor = history.cursor;
-    res.json({history: history, cursor: cursor});
+    User.carEnterHistory(req, res);
 })
 
 router.get("/gate", (req, res) => { res.render('../views/gate') });
 router.post("/gate", async (req, res) => {
+    console.log(req.body)
     console.log('gate called');
     await Gate.carNumberCheck(req, res);
 })

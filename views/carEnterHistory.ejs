@@ -10,10 +10,10 @@
     </div>
     <script>
         let cursor = ''
-        var receivedHistory
+        var receivedHistory // ajax로 수신 받은 이력
 
         function loadHistory() {
-            let newHistory = []
+            let newHistory = [] // HTML 태그 삽입용
             var ajax = $.ajax({
                 url: "/carEnterHistory",
                 data: {cursor: cursor},
@@ -22,7 +22,7 @@
                 success: function (res) {
                     console.log(res)
                     receivedHistory = res.history.txs
-                    cursor = res.cursor
+                    cursor = res.history.cursor
                     
                     receivedHistory.forEach(function (item){
                         var time = new Date(item.time*1000);
@@ -36,12 +36,12 @@
 
                         newHistory.push(
                             '<li class="list-group-item">'+
-                            '[Tx Hash] :'+item.txHash+' [입차 시간] :'+time+
+                            '[차량 번호] :'+item.carNumber+' [입차 시간] :'+time+
                             '</li>'
                         )
                     })
                     $('#txList').append(newHistory); // HTML 태그 삽입
-                  if(res.cursor === ''){
+                  if(res.history.cursor === ''){
                     alert('마지막 기록')
                     $('#loadMore').hide();
                   }

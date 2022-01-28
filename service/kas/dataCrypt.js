@@ -10,9 +10,15 @@ module.exports = {
     },
     
     dataDecrypt(data) {
-        const decipher = crypto.createDecipher('aes-256-cbc', dataKey.key);
-        let result = decipher.update(data, 'base64', 'utf8');
-        result += decipher.final('utf8');
-        return result;
+        try{
+            const decipher = crypto.createDecipher('aes-256-cbc', dataKey.key);
+            let result = decipher.update(data, 'base64', 'utf8');
+            result += decipher.final('utf8');
+            return result;
+        }
+        catch{
+            return data
+        }
+
     }
 }
