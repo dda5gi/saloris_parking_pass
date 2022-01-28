@@ -1,7 +1,8 @@
 const express = require('express');
 const Car = require('../service/carCtr');
 const User = require('../service/userCtr');
-const Gate = require('../service/gateCtr')
+const Gate = require('../service/gateCtr');
+const tokenHistory = require('../service/kas/tokenHistory');
 const router = express.Router();
 
 router.get("/", (req, res) => { res.render('../views/index') });
@@ -38,15 +39,23 @@ router.post("/carRegister", async (req, res) => {
     console.log('carRegister called');
     await Car.carSignUp(req, res);
 })
-router.get("/carCheck", (req, res) => {
+router.get("/carCheck", async (req, res) => {
     User.carCheck(req, res);
 });
 router.delete("/carDelete", (req, res) => {
     User.carDelete(req, res);
 })
 
+router.get("/carEnterHistory", async (req, res) => {
+    res.render('../views/carEnterHistory')
+});
+router.post("/carEnterHistory", async (req, res) => {
+    User.carEnterHistory(req, res);
+})
+
 router.get("/gate", (req, res) => { res.render('../views/gate') });
 router.post("/gate", async (req, res) => {
+    console.log(req.body)
     console.log('gate called');
     await Gate.carNumberCheck(req, res);
 })

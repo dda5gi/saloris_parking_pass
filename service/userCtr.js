@@ -2,6 +2,7 @@ const User = require('../model/userSchema');
 const Car = require('../model/carSchema');
 const carCtr = require('./carCtr');
 const wallet = require('./kas/wallet');
+const tokenHistory = require('./kas/tokenHistory');
 
 
 module.exports = {
@@ -169,6 +170,16 @@ module.exports = {
                 res.render('../views/carCheck', {result : 'empty'})
                 console.log('carCheck : no car')
             }
+        })
+    },
+
+    carEnterHistory: async function(req, res){
+        let history
+        let cursor = req.body.cursor
+        User.find({loginId: req.cookies.userId}, async function(err, docs){
+            if(err) console.error(err);
+            history = await tokenHistory.klayHistorty(docs[0].kasAddress, cursor);
+            res.json({history: history});
         })
     }
 };
