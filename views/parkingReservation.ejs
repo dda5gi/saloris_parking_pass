@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <%-include('head.ejs') %>
+  <body>
+    <%-include('nav.ejs') %>
+    <div class="accordion">
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading">OO주차장</h2>
+      </div>
+
+      <% if(result != 'empty') {result.sort()}%>
+      <% for(var i=0; i<result.length; i++) { %>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading_<%=i+1 %>">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_<%=i %>" aria-expanded="false" aria-controls="#collapse_<%=i %>">
+            <%= result[i].zoneName %>
+          </button>
+        </h2>
+        <div id="collapse_<%=i %>" class="accordion-collapse collapse" aria-labelledby="heading__<%=i+1 %>" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            <ul class="list-group">
+
+              <!-- 예약 FORM -->
+              <li class="list-group-item">
+                <label for="startTime" class="form_label">시작시간</label>
+                <input id="startTime<%=i %>" type="datetime-local" class="form-control" placeholder="datetime-local input">
+                <label for="endTime" class="form_label">종료시간</label>
+                <input id="endTime<%=i %>" type="datetime-local" class="form-control" placeholder="datetime-local input">
+                <button class="btn btn-info" onclick="$('#confirmModal<%=i %>').modal('show')">예약</button>
+              </li>
+
+              <!-- 기존 예약 내역 출력 -->
+              <!-- 시간 변환 필요 -->
+              <!-- <% for(var j=0; j<result[i].reservedTime.length; j++) { %>
+                <li class="list-group-item">
+                  <%= result[i].reservedTime[j].startTime %>
+                  <%= result[i].reservedTime[j].endTime %>
+                </li>
+              <% } %> -->
+
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 예약 MODAL -->
+      <div class="modal fade" id="confirmModal<%=i %>" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>예약하시겠습니까?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니오 </button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="zoneReserve('<%=i%>')">예</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 예약 MODAL -->
+
+      <!-- 예약완료 MODAL -->
+      <div class="modal fade" id="completeModal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>예약이 완료되었습니다</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="location.href='/parkingReservation'">확인</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 예약완료 MODAL -->
+
+      <% } %>
+    </div>
+  </body>
+
+  <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
+  <script>
+    var getMethodResult = <%- JSON.stringify(result) %>;
+
+    function zoneReserve(i) {
+      var reserveData = {};
+
+      reserveData.zoneName = getMethodResult[i].zoneName
+      reserveData.startTime = $("#startTime"+i).val();
+      reserveData.endTime = $("#endTime"+i).val();
+      console.log(reserveData)
+
+      $.ajax({
+        url: "/parkingReservation",
+        data: reserveData,
+        type: "POST",
+        dataType: "JSON",
+        success: function (res) {
+          if(res.msg === 'fail'){
+            alert('예약 실패')
+          } else{
+            $('#completeModal').modal('show');  
+          }
+        }
+      });
+    }
+  </script>
+</html>

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Car = require('./carSchema');
 
 const userSchema = new mongoose.Schema({
     loginId: { type: String, required: true },
