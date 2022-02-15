@@ -61,6 +61,10 @@ router.post("/parkingReservation", async (req, res) => {
     Parking.parkingZoneReserve(req, res);
 });
 
+router.post("/parkingHandOver", async (req, res) => {
+    Parking.parkingZoneHandOver(req, res);
+});
+
 router.get("/gate", (req, res) => { res.render('../views/gate') });
 router.post("/gate", async (req, res) => {
     console.log(req.body)

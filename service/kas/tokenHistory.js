@@ -30,14 +30,8 @@ class TokenHistory extends ApiCaller {
         for(let i = 0; i < res.items.length; i++){
             history.txs.push({'carNumber':dataCrypt.dataDecrypt(klayMemo[i]), 'time': res.items[i].timestamp})
         }
-        console.log(history)
-        return history
-        // for (let i = 0; i < temp.length; i++) {
-        //     var txHash = await Scraper.getKlayMemo(temp[i].transactionHash)
-        //     history.txs.push({'txHash':txHash, 'time': temp[i].timestamp})
-        // }
-        // console.log(history)
-        // return history
+        console.log(history);
+        return history;
     }
 }
 
