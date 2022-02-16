@@ -6,7 +6,7 @@
   <body>
     <%-include('nav.ejs') %>
     <div class="accordion" id="carInfoListAccordion">
-      <% if(result != 'empty') {result.sort()}%>
+      <% if(result != 'empty') {result.sort()%>
       <% for(var i=0; i<result.length; i++) { %>
       <div class="accordion-item">
         <h2 class="accordion-header" id="heading_<%=i+1 %>">
@@ -62,6 +62,8 @@
         </div>
       </div>
     </div>
+    <% }}else{ %>
+      <div>차량이 존재하지 않습니다.</div>
     <% } %>
 
     <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->

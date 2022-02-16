@@ -4,20 +4,21 @@
   <body>
     <%-include('nav.ejs') %>
     <li class="list-group-item">
-      <h2 class="accordion-header">입차 내역 조회</h2>
+      <h2 class="accordion-header">예약 내역 조회</h2>
     </li>
     <% if(history != 'empty') {%>
     <% for(var i=0; i<history.length; i++) { %>
       <div class="accordion-item">
         <h2 class="accordion-header" id="heading_<%=i+1 %>">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_<%=i %>" aria-expanded="false" aria-controls="#collapse_<%=i %>">
-            <%= history[i].date.toLocaleString() %>
+            <%= history[i].zoneName %>
           </button>
         </h2>
         <div id="collapse_<%=i %>" class="accordion-collapse collapse" aria-labelledby="heading_<%=i+1 %>" data-bs-parent="#accordionExample">
           <div class="accordion-body">
             <ul class="list-group">
-              <li class="list-group-item">차량 번호 : <%= history[i].carNumber %></li>
+              <li class="list-group-item">시작 시간 : <%= history[i].startTime.toLocaleString() %></li>
+              <li class="list-group-item">종료 시간 : <%= history[i].endTime.toLocaleString() %></li>
               <li class="list-group-item">
                 <button class="btn btn-info" id="tx<%=i %>" onclick=location.href='https://baobab.scope.klaytn.com/tx/<%=history[i].txHash %>'>트랜잭션 확인</button>
               </li>
@@ -26,7 +27,7 @@
         </div>
       </div>
     <% }}else{ %>
-      <div>입차 이력이 존재하지 않습니다.</div>
+      <div>예약 이력이 존재하지 않습니다.</div>
     <% } %>
 
     <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->

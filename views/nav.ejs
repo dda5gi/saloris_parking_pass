@@ -6,36 +6,27 @@
       </button>
       <div class="collapse navbar-collapse show" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/">Home</a>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/carRegister" id="carRegister" style="display: none">차량 등록</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/carCheck" id="carCheck" style="display: none">차량 조회</a></li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown active " href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: none">
+              트랜잭션 내역
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="/carEnterHistory">입차</a></li>
+              <li><a class="dropdown-item" href="/reservationHistory">예약</a></li>
+              <li><a class="dropdown-item" href="/handOverHistory">양도</a></li>
+            </ul>
           </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="/carRegister" id="carRegister" style="display: none">차량 등록</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="/carCheck" id="carCheck" style="display: none">차량 조회</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="/carEnterHistory" id="carEnterHistory" style="display: none">입차 이력</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="/parkingReservation" id="parkingReservation" style="display: none">주차 예약</a>
-          </li>
-          <li class="nav-item">
-              <button class="btn btn-dark" id="login" onclick="location.href='/login'">로그인</button>
-          </li>
-          <li class="nav-item">
-            <button class="btn btn-dark" id="logout" onclick="location.href='/logout'" style="display: none">로그아웃</button>
-          </li>
-          <li class="nav-item">
-            <button class="btn btn-info" id="userRegister" onclick="location.href='/userRegister'">회원가입</button>
-          </li>
-          <li class="nav-item">
-            <button class="btn btn-success" id="pushOn" onclick="pushOn()" style="display: none">알림 켜기</button>
-          </li>
-          <li class="nav-item">
-            <button class="btn btn-success" id="pushOff" onclick="pushOff()" style="display: none">알림 끄기</button>
-          </li>
+          
+          <li class="nav-item"><a class="nav-link active" href="/parkingReservation" id="parkingReservation" style="display: none">주차 예약</a></li>
+          <li class="nav-item"><button class="btn btn-dark" id="login" onclick="location.href='/login'">로그인</button></li>
+          <li class="nav-item"><button class="btn btn-dark" id="logout" onclick="location.href='/logout'" style="display: none">로그아웃</button></li>
+          <li class="nav-item"><button class="btn btn-info" id="userRegister" onclick="location.href='/userRegister'">회원가입</button></li>
+          <li class="nav-item"><button class="btn btn-success" id="pushOn" onclick="pushOn()" style="display: none">알림 켜기</button></li>
+          <li class="nav-item"><button class="btn btn-success" id="pushOff" onclick="pushOff()" style="display: none">알림 끄기</button></li>
         </ul>
       </div>
     </div>
@@ -145,7 +136,7 @@
     $('#userRegister').hide();
     $('#carRegister').show();
     $('#carCheck').show();
-    $('#carEnterHistory').show();
+    $('#navbarDropdownMenuLink').show();
     $('#parkingReservation').show();
     $('#pushOn').show();
     $('#pushOff').hide();

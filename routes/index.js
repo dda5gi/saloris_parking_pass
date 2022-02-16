@@ -48,11 +48,14 @@ router.delete("/carDelete", (req, res) => {
 })
 
 router.get("/carEnterHistory", async (req, res) => {
-    res.render('../views/carEnterHistory')
-});
-router.post("/carEnterHistory", async (req, res) => {
     User.carEnterHistory(req, res);
-})
+});
+router.get("/reservationHistory", async (req, res) => {
+    User.reservationHistory(req, res);
+});
+router.get("/handOverHistory", async (req, res) => {
+    User.handOverHistory(req, res);
+});
 
 router.get("/parkingReservation", async (req, res) => {
     Parking.parkingZoneCheck(req, res);

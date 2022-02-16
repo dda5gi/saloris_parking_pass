@@ -3,6 +3,8 @@ const Car = require('../model/carSchema');
 const fcm = require('./fcm/fcm');
 const wallet = require('./kas/wallet');
 const dataCrypt = require('./kas/dataCrypt');
+const History = require('../model/historySchema');
+
 const waitTime = 10000; //서버가 유저 응답 기다릴 시간  
 const fcmCompensateTime = 1000; //FCM 전송 딜레이에 따른 시간 보정용
 
@@ -49,9 +51,15 @@ module.exports = {
                             let encData = dataCrypt.dataEncrypt(req.body.carNumber)
                             const txHash = await wallet.sendTransfer(userDoc[0].kasAddress, userDoc[0].kasAddress, encData);
                             console.log('Tx result hash : ', txHash);
-                            return res.json({
-                                isSuccess: 'true',
-                                msg: '입차 승인'
+                            History.findOneAndUpdate( {userId: userDoc[0].loginId},
+                                { $push: { "carEnter": { "txHash": txHash, "carNumber": req.body.carNumber, "date": new Date()} } },
+                                { upsert: true },
+                                function(err, docs) {
+                                    if(err){res.json({ isSuccess: 'false'});}
+                                    return res.json({
+                                        isSuccess: 'true',
+                                        msg: '입차 승인'
+                                    })
                             })
                         });
 

@@ -41,7 +41,7 @@
                   종료: <%= result.zone[i].reservedTime[j].endTime.toLocaleString() %><br>
                   예약자: <%= result.zone[i].reservedTime[j].userId%><br>
                   <% if(result.userId == result.zone[i].reservedTime[j].userId){ %>
-                    <button type="button" class="btn btn-secondary" onclick="handOver('<%=result.zone[i].reservedTime[j]._id%>', '<%=result.zone[i]._id%>')">
+                    <button type="button" class="btn btn-secondary" onclick="handOver('<%=result.zone[i].reservedTime[j]._id%>', '<%=result.zone[i]._id%>', '<%=result.zone[i].reservedTime[j].startTime%>', '<%=result.zone[i].reservedTime[j].endTime%>')">
                       양도</button>
                     <input type="text" id="<%=result.zone[i].reservedTime[j]._id%>">
                   <% } %>
@@ -140,11 +140,13 @@
     }
 
     // 주차 구역 양도
-    function handOver(reserveOid, zoneOid){
+    function handOver(reserveOid, zoneOid, startTime, endTime){
       var handOverData = {};
       handOverData.consignee = $("#"+reserveOid).val();
       handOverData.reserveOid = reserveOid;
       handOverData.zoneOid = zoneOid;
+      handOverData.startTime = startTime;
+      handOverData.endTime = endTime;
       console.log(handOverData)
       $.ajax({
         url: "/parkingHandOver",
