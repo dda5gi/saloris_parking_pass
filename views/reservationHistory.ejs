@@ -3,9 +3,10 @@
   <%-include('head.ejs') %>
   <body>
     <%-include('nav.ejs') %>
-    <li class="list-group-item">
-      <h2 class="accordion-header">예약 내역 조회</h2>
-    </li>
+    <h2 class="display-4">예약 트랜잭션</h2>
+    <hr class="my-4">
+
+    <div class="container">
     <% if(history != 'empty') {%>
     <% for(var i=0; i<history.length; i++) { %>
       <div class="accordion-item">
@@ -14,8 +15,8 @@
             <%= history[i].zoneName %>
           </button>
         </h2>
-        <div id="collapse_<%=i %>" class="accordion-collapse collapse" aria-labelledby="heading_<%=i+1 %>" data-bs-parent="#accordionExample">
-          <div class="accordion-body">
+        <div id="collapse_<%=i %>" class="accordion-collapse collapse">
+          <div class="accordion-body" style="background-color: #e7f0ff">
             <ul class="list-group">
               <li class="list-group-item">시작 시간 : <%= history[i].startTime.toLocaleString() %></li>
               <li class="list-group-item">종료 시간 : <%= history[i].endTime.toLocaleString() %></li>
@@ -29,15 +30,10 @@
     <% }}else{ %>
       <div>예약 이력이 존재하지 않습니다.</div>
     <% } %>
-
-    <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
-    <script>
-    </script>
-
+  </div>
   </body>
-  <style type="text/css">
-    body {
-      background-color: #dddddd;
-    }
-  </style>
+  <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
+  <script>
+  </script>
+  
 </html>

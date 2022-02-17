@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="en">
   <%-include('head.ejs') %>
-  <div id="collapsed_<%=i %>"><td ><%=i%></td></div>
-
   <body>
     <%-include('nav.ejs') %>
+    <h2 class="display-4">차량 조회</h2>
+    <hr class="my-4">
+
     <div class="accordion" id="carInfoListAccordion">
       <% if(result != 'empty') {result.sort()%>
       <% for(var i=0; i<result.length; i++) { %>
@@ -15,7 +16,7 @@
           </button>
         </h2>
         <div id="collapse_<%=i %>" class="accordion-collapse collapse" aria-labelledby="heading_<%=i+1 %>" data-bs-parent="#accordionExample">
-          <div class="accordion-body">
+          <div class="accordion-body" style="background-color: #e7f0ff">
             <ul class="list-group">
               <li class="list-group-item">차량 형태 : <%= result[i].carType %></li>
               <li class="list-group-item">제조사 : <%= result[i].manufacturer %></li>
@@ -65,41 +66,34 @@
     <% }}else{ %>
       <div>차량이 존재하지 않습니다.</div>
     <% } %>
-
-    <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
-    <script>
-      var carList = <%- JSON.stringify(result) %>;
-      var idList = new Array();
-
-      carList.forEach(element => {
-        idList.push(element._id)
-      });
-
-      function carDrop(i){
-        var msg = {};
-        msg.carId = idList[i]
-        console.log(msg);
-
-        var ajax = $.ajax({
-          url: "/carDelete",
-          data: msg,
-          type: "DELETE",
-          dataType: "JSON",
-          success: function (res) {
-            if(res.msg === 'fail'){
-              alert('삭제 실패')
-            } else{
-              $('#completeModal').modal('show');  
-            }
-          }
-        });
-      }
-    </script>
-
   </body>
-  <style type="text/css">
-    body {
-      background-color: #dddddd;
+  <!-- SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT-SCRIPT- -->
+  <script>
+    var carList = <%- JSON.stringify(result) %>;
+    var idList = new Array();
+
+    carList.forEach(element => {
+      idList.push(element._id)
+    });
+
+    function carDrop(i){
+      var msg = {};
+      msg.carId = idList[i]
+      console.log(msg);
+
+      var ajax = $.ajax({
+        url: "/carDelete",
+        data: msg,
+        type: "DELETE",
+        dataType: "JSON",
+        success: function (res) {
+          if(res.msg === 'fail'){
+            alert('삭제 실패')
+          } else{
+            $('#completeModal').modal('show');  
+          }
+        }
+      });
     }
-  </style>
+  </script>
 </html>

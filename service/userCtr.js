@@ -178,7 +178,11 @@ module.exports = {
     carEnterHistory: async function(req, res){
         History.find({userId: req.cookies.userId}, async function(err, docs){
             if(docs[0]){
-                res.render('../views/carEnterHistory', {history : docs[0].carEnter})
+                if(docs[0].carEnter.length){
+                    res.render('../views/carEnterHistory', {history : docs[0].carEnter})
+                }else {
+                    res.render('../views/carEnterHistory', {history : 'empty'})
+                }
             }else{
                 res.render('../views/carEnterHistory', {history : 'empty'})
                 console.log('carEnterHistory : no car')
@@ -189,7 +193,11 @@ module.exports = {
     reservationHistory: async function(req, res){
         History.find({userId: req.cookies.userId}, async function(err, docs){
             if(docs[0]){
-                res.render('../views/reservationHistory', {history : docs[0].reservation})
+                if(docs[0].reservation.length){
+                    res.render('../views/reservationHistory', {history : docs[0].reservation})
+                }else {
+                    res.render('../views/reservationHistory', {history : 'empty'})
+                }
             }else{
                 res.render('../views/reservationHistory', {history : 'empty'})
                 console.log('reservationHistory : no reservation')
@@ -200,7 +208,11 @@ module.exports = {
     handOverHistory: async function(req, res){
         History.find({userId: req.cookies.userId}, async function(err, docs){
             if(docs[0]){
-                res.render('../views/handOverHistory', {history : docs[0].handOver})
+                if(docs[0].handOver.length){
+                    res.render('../views/handOverHistory', {history : docs[0].handOver})
+                }else {
+                    res.render('../views/handOverHistory', {history : 'empty'})
+                }
             }else{
                 res.render('../views/handOverHistory', {history : 'empty'})
                 console.log('handOverHistory : no handOver')

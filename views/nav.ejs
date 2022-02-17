@@ -1,18 +1,16 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-      <a class="navbar-brand mb-0 h1">Parking pass</a>
+      <a class="navbar-brand mb-0 h1" href="/">Parking pass</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse show" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Home</a></li>
           <li class="nav-item"><a class="nav-link active" href="/carRegister" id="carRegister" style="display: none">차량 등록</a></li>
           <li class="nav-item"><a class="nav-link active" href="/carCheck" id="carCheck" style="display: none">차량 조회</a></li>
-
           <li class="nav-item dropdown">
             <a class="nav-link dropdown active " href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: none">
-              트랜잭션 내역
+              트랜잭션 기록
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <li><a class="dropdown-item" href="/carEnterHistory">입차</a></li>
@@ -20,8 +18,8 @@
               <li><a class="dropdown-item" href="/handOverHistory">양도</a></li>
             </ul>
           </li>
-          
-          <li class="nav-item"><a class="nav-link active" href="/parkingReservation" id="parkingReservation" style="display: none">주차 예약</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/parkingReservation" id="parkingReservation" style="display: none">주차공간 예약</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/parkingHandOver" id="parkingHandOver" style="display: none">예약 양도</a></li>
           <li class="nav-item"><button class="btn btn-dark" id="login" onclick="location.href='/login'">로그인</button></li>
           <li class="nav-item"><button class="btn btn-dark" id="logout" onclick="location.href='/logout'" style="display: none">로그아웃</button></li>
           <li class="nav-item"><button class="btn btn-info" id="userRegister" onclick="location.href='/userRegister'">회원가입</button></li>
@@ -81,7 +79,7 @@
     }
   });
 
-  try{ // 구글 파이어베이스 기능은 https일때만 작동함 but localhost는 http로도 작동
+  try{ // WEB의 구글 파이어베이스 기능은 https일때만 작동함 but localhost는 http로도 작동
     // 외부에서 http로 접근할 경우 파이어베이스 미작동 -> 알림 ON/OFF 버튼 미출력 
     var firebaseConfig = {
       apiKey: "AIzaSyDj_7i_joBFaiCd2Asol8GTJTEpwBrJOeM",
@@ -138,6 +136,7 @@
     $('#carCheck').show();
     $('#navbarDropdownMenuLink').show();
     $('#parkingReservation').show();
+    $('#parkingHandOver').show();
     $('#pushOn').show();
     $('#pushOff').hide();
   }

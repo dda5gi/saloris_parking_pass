@@ -58,12 +58,15 @@ router.get("/handOverHistory", async (req, res) => {
 });
 
 router.get("/parkingReservation", async (req, res) => {
-    Parking.parkingZoneCheck(req, res);
+    Parking.parkingZoneReserveRender(req, res);
 });
 router.post("/parkingReservation", async (req, res) => {
     Parking.parkingZoneReserve(req, res);
 });
 
+router.get("/parkingHandOver", async (req, res) => {
+    Parking.parkingZoneHandOverRender(req, res);
+});
 router.post("/parkingHandOver", async (req, res) => {
     Parking.parkingZoneHandOver(req, res);
 });

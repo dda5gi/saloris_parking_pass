@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const { get } = require('request');
 const app = express();
-app.use(cookieParser());
 const mongoose = require('mongoose');
 const routes = require('./routes/');
 
@@ -22,6 +21,8 @@ db.once('open', function() {
 });
 
 app.set('view engine', 'ejs')
+
+app.use(cookieParser());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));

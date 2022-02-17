@@ -7,9 +7,15 @@ const dataCrypt = require('./kas/dataCrypt');
 
 module.exports = {
     // 차량 예약 내역 페이지 GET
-    parkingZoneCheck: function(req, res) {
+    parkingZoneReserveRender: function(req, res) {
         ParkingLot.find(function(err, docs) {
             res.render('../views/parkingReservation', {result : {"zone": docs, "userId": req.cookies.userId }})
+        })
+    },
+
+    parkingZoneHandOverRender: function(req, res) {
+        ParkingLot.find(function(err, docs) {
+            res.render('../views/parkingHandOver', {result : {"zone": docs, "userId": req.cookies.userId }})
         })
     },
 
@@ -23,7 +29,7 @@ module.exports = {
                 if(err){res.json({ isSuccess: 'false'});}
                 //kasAddress를 얻기 위해 find
                 User.find( {loginId: req.cookies.userId}, async function(err, userDoc){
-                    let encData = dataCrypt.dataEncrypt(req.body.zoneName+req.cookies.userId+startTime+endTime)
+                    let encData = dataCrypt.dataEncrypt(req.body.zoneName+','+req.cookies.userId+','+startTime+','+endTime)
                     const txHash = await wallet.sendTransfer(userDoc[0].kasAddress, userDoc[0].kasAddress, encData);
                     // DB insert
                     History.findOneAndUpdate( {userId: req.cookies.userId},
@@ -54,10 +60,9 @@ module.exports = {
                     {$set:{"reservedTime.$.userId": req.body.consignee}},
                     function(err, docs){
                         if(err) console.error(err);
-                        console.log(docs);
                         // 받는이 kasAddress을 얻기 위해 find
                         User.find( {loginId: req.cookies.userId}, async function(err, userFromDoc){
-                            let encData = dataCrypt.dataEncrypt(req.body.zoneName+req.cookies.userId+req.body.consignee+req.body.startTime+req.body.endTime)
+                            let encData = dataCrypt.dataEncrypt(req.body.zoneName+','+req.cookies.userId+','+req.body.consignee+','+req.body.startTime+','+req.body.endTime)
                             const txHash = await wallet.sendTransfer(userFromDoc[0].kasAddress, userToDoc[0].kasAddress, encData);
                             // DB insert
                             History.findOneAndUpdate( {userId: req.cookies.userId},
